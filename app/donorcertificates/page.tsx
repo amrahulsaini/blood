@@ -17,59 +17,83 @@ export default function DonorCertificatesPage() {
   const [caption, setCaption] = useState('');
   const [isGen, setIsGen] = useState(false);
   const [genError, setGenError] = useState('');
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
   const router = useRouter();
 
   // Security: Check if user came from form submission
   useEffect(() => {
-    try {
-      // Read from query string on client without useSearchParams to avoid CSR bailout
-      const qp = new URLSearchParams(window.location.search);
-      const qpName = qp.get('name');
-      
-      if (qpName && qpName.trim()) {
-        // User came with a name in URL - authorized
-        setName(qpName.trim());
-        setIsAuthorized(true);
-        try { localStorage.setItem('donorName', qpName.trim()); } catch {}
-      } else {
+    const checkAuthorization = () => {
+      try {
+        // Read from query string on client without useSearchParams to avoid CSR bailout
+        const qp = new URLSearchParams(window.location.search);
+        const qpName = qp.get('name');
+        
+        if (qpName && qpName.trim()) {
+          // User came with a name in URL - authorized
+          setName(qpName.trim());
+          setIsLoading(false);
+          try { localStorage.setItem('donorName', qpName.trim()); } catch {}
+          return;
+        }
+        
         // Check localStorage as fallback
         const saved = localStorage.getItem('donorName');
         if (saved && saved.trim()) {
           setName(saved);
-          setIsAuthorized(true);
-        } else {
-          // No name found - redirect to donor entries
-          alert('Please register first to get your certificate!');
-          router.push('/donorentries');
+          setIsLoading(false);
           return;
         }
+        
+        // No name found - need to redirect
+        setShouldRedirect(true);
+      } catch (e) {
+        // Error - redirect to safety
+        setShouldRedirect(true);
       }
+    };
 
+    checkAuthorization();
+
+    // Load saved settings
+    try {
       const savedOffset = localStorage.getItem('certYOffset');
       if (savedOffset) setOffsetY(parseFloat(savedOffset));
       const savedScale = localStorage.getItem('certFontScale');
       if (savedScale) setFontScale(parseFloat(savedScale));
-    } catch (e) {
-      // Error accessing localStorage or URL - redirect to safety
+    } catch {}
+  }, []);
+
+  // Handle redirect in separate effect
+  useEffect(() => {
+    if (shouldRedirect) {
       router.push('/donorentries');
     }
-  }, [router]);
+  }, [shouldRedirect, router]);
 
-  // Don't render anything until authorization is checked
-  if (!isAuthorized) {
+  // Show loading/redirect state
+  if (isLoading || shouldRedirect) {
     return (
       <div style={{
         minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'column',
+        gap: '1rem',
         background: 'linear-gradient(135deg, #fff5f5 0%, #ffe0e0 50%, #fff0f0 100%)',
         fontSize: '1.5rem',
         color: '#b91c1c',
         fontWeight: 600
       }}>
-        Redirecting to registration...
+        {shouldRedirect ? (
+          <>
+            <div>Please register first to get your certificate!</div>
+            <div style={{ fontSize: '1.2rem' }}>Redirecting to registration...</div>
+          </>
+        ) : (
+          <div>Loading...</div>
+        )}
       </div>
     );
   }
