@@ -125,8 +125,10 @@ export default function DonorCertificatesPage() {
   const handleCopyCaption = async () => {
     try {
       await navigator.clipboard.writeText(caption);
-      alert('Caption copied to clipboard. LinkedIn will open next—paste it in and attach the downloaded image.');
-    } catch {}
+      alert('✅ Caption copied to clipboard! You can now paste it on LinkedIn.');
+    } catch (e) {
+      alert('Failed to copy caption. Please try again.');
+    }
   };
 
   const handleShareLinkedIn = async () => {
@@ -140,25 +142,33 @@ export default function DonorCertificatesPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name }),
         });
-        if (res.ok) {
-          const data = await res.json();
-          const generatedCaption = data.caption || `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
-          setCaption(generatedCaption);
-          try { localStorage.setItem('certCaption', generatedCaption); } catch {}
+        if (!res.ok) {
+          throw new Error('Failed to generate caption');
         }
+        const data = await res.json();
+        if (!data.caption) {
+          throw new Error('No caption received from AI');
+        }
+        setCaption(data.caption);
+        try { localStorage.setItem('certCaption', data.caption); } catch {}
       } catch (e: any) {
-        // Use fallback caption if generation fails
-        const fallbackCaption = `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
-        setCaption(fallbackCaption);
+        setGenError('Failed to generate caption. Please try "Generate Caption" button first.');
+        setIsGen(false);
+        return; // Don't proceed without caption
       } finally {
         setIsGen(false);
       }
       // Wait a moment for caption to be set
-      await new Promise(resolve => setTimeout(resolve, 800));
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-    // Get current caption for sharing
-    const currentCaption = caption || `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
+    // Auto-copy caption to clipboard
+    try { 
+      await navigator.clipboard.writeText(caption);
+      console.log('Caption auto-copied to clipboard'); 
+    } catch (e) {
+      console.log('Clipboard write failed');
+    }
 
     // Generate and download the certificate
     const blob = await generateCertificateBlob();
@@ -180,7 +190,7 @@ export default function DonorCertificatesPage() {
         if ((navigator as any).canShare && (navigator as any).canShare({ files: [file] })) {
           await (navigator as any).share({
             files: [file],
-            text: currentCaption,
+            text: caption,
             title: 'Blood Donation Certificate - Aashayein'
           });
           return; // Successfully shared - user can choose LinkedIn from share menu
@@ -191,14 +201,7 @@ export default function DonorCertificatesPage() {
       }
     }
 
-    // Copy caption to clipboard for manual pasting
-    try { 
-      await navigator.clipboard.writeText(currentCaption);
-      console.log('Caption copied to clipboard'); 
-    } catch (e) {
-      console.log('Clipboard write failed');
-    }
-
+    // Caption already copied above, just need to open LinkedIn
     // Detect device and open LinkedIn appropriately
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     
@@ -314,6 +317,24 @@ export default function DonorCertificatesPage() {
           onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
           >
             {isGen ? 'Generating Caption…' : 'Generate Caption'}
+          </button>
+          <button onClick={handleCopyCaption} disabled={!caption} style={{
+            padding: '0.75rem 1.25rem',
+            background: caption ? '#fff' : '#f5f5f5',
+            color: '#b91c1c',
+            border: '2px solid #fecaca',
+            borderRadius: 10,
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            cursor: caption ? 'pointer' : 'not-allowed',
+            transition: 'transform 0.2s',
+            opacity: caption ? 1 : 0.5
+          }}
+          onMouseEnter={(e) => caption && (e.currentTarget.style.transform = 'translateY(-2px)')}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            Copy Caption
           </button>
           <button onClick={handleShareLinkedIn} disabled={isGen} style={{
             padding: '0.75rem 1.25rem',
