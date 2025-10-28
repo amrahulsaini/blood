@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 const CERT_IMAGE_SRC = '/official%20offer%20letter.png';
 
 // Base ratio to place the name on the certificate image (aimed at the blank line area)
-const NAME_Y_RATIO = 0.475; // ~47.5% from top – closer to the horizontal line
+const NAME_Y_RATIO = 0.53; // ~51% from top – moved down a bit
 const NAME_X_CENTER_RATIO = 0.5; // center
 
 export default function DonorCertificatesPage() {
