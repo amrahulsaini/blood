@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const donorName = (name || 'our newest donor').toString().slice(0, 120);
-    const prompt = `Write a concise LinkedIn caption (2–3 lines) celebrating ${donorName}'s registration as a blood donor with Aashayein – The Life Saviours. Tone: warm, proud, community-first. Include 1–2 appropriate emojis and 2–4 short hashtags (e.g., #BloodDonation #SaveLives). Output plain text only—no markdown, no quotes.`;
+    const prompt = `Write an enthusiastic LinkedIn post (4-6 lines) celebrating ${donorName}'s journey as a blood donor with Aashayein – The Life Saviours. Express genuine excitement and gratitude for joining this noble cause. Emphasize how proud and honored they are to be part of this life-saving community. Make it personal, heartfelt, and inspiring. Include 3-4 relevant emojis and 4-6 impactful hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood). Tone: grateful, excited, inspirational, community-driven. Output plain text only—no markdown, no quotes.`;
 
     async function callModel(model: string) {
       const url = `${API_BASE}/${model}:generateContent?key=${apiKey}`;
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
           temperature: 0.9,
           topK: 40,
           topP: 0.9,
-          maxOutputTokens: 200,
+          maxOutputTokens: 400,
         },
         }),
       });
@@ -75,7 +75,13 @@ export async function POST(req: NextRequest) {
       if (!succeeded) {
         console.error('Caption API failed', errors);
         // Graceful local fallback caption so UX still works
-        const fallbackCaption = `Honored to welcome ${donorName} as a registered blood donor with Aashayein – The Life Saviours. Your commitment can save lives. ❤️ #BloodDonation #SaveLives`;
+        const fallbackCaption = `🎉 Thrilled and honored to officially join Aashayein – The Life Saviours as a registered blood donor! 
+
+I'm deeply grateful for the opportunity to be part of this incredible community dedicated to saving lives. Every drop counts, and knowing that my contribution can make a real difference fills me with immense pride and purpose.
+
+Thank you, Aashayein, for empowering me to be a lifesaver! Let's continue making an impact together. ❤️💉
+
+#BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood`;
         return NextResponse.json(
           { caption: fallbackCaption, ai: false, note: 'Returned local fallback due to model errors', details: errors },
           { status: 200 }
@@ -86,7 +92,7 @@ export async function POST(req: NextRequest) {
     const data = await resp.json();
     const text: string =
       data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-      'Proud to welcome a new lifesaver to Aashayein – The Life Saviours. #BloodDonation #SaveLives';
+      `🎉 Excited to join Aashayein – The Life Saviours as a blood donor! Grateful for this opportunity to save lives and make a difference. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
 
     return NextResponse.json({ caption: text.trim() }, { status: 200 });
   } catch (e) {

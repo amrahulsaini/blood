@@ -142,13 +142,13 @@ export default function DonorCertificatesPage() {
         });
         if (res.ok) {
           const data = await res.json();
-          const generatedCaption = data.caption || 'Proud to support blood donation. #BloodDonation #SaveLives';
+          const generatedCaption = data.caption || `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
           setCaption(generatedCaption);
           try { localStorage.setItem('certCaption', generatedCaption); } catch {}
         }
       } catch (e: any) {
         // Use fallback caption if generation fails
-        const fallbackCaption = 'Proud to support blood donation. #BloodDonation #SaveLives';
+        const fallbackCaption = `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
         setCaption(fallbackCaption);
       } finally {
         setIsGen(false);
@@ -157,7 +157,17 @@ export default function DonorCertificatesPage() {
       await new Promise(resolve => setTimeout(resolve, 800));
     }
 
-    // Download the certificate automatically
+    // Get current caption for sharing
+    const currentCaption = caption || `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
+
+    // Copy caption to clipboard silently
+    try { 
+      await navigator.clipboard.writeText(currentCaption); 
+    } catch (e) {
+      console.log('Clipboard write failed');
+    }
+
+    // Download the certificate automatically (silent)
     const blob = await generateCertificateBlob();
     if (blob) {
       const url = URL.createObjectURL(blob);
@@ -168,54 +178,29 @@ export default function DonorCertificatesPage() {
       setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
-    // Get current caption for sharing
-    const currentCaption = caption || 'Proud to support blood donation. #BloodDonation #SaveLives';
-
-    // Try Web Share API first (best for mobile with file + text)
-    try {
-      if (blob && 'share' in navigator) {
-        const file = new File([blob], 'certificate.png', { type: 'image/png' });
-        const canShareFiles = (navigator as any).canShare?.({ files: [file] });
-        
-        if (canShareFiles) {
-          await (navigator as any).share({
-            files: [file],
-            text: currentCaption,
-            title: 'Blood Donation Certificate',
-          });
-          return; // Successfully shared via native share
-        }
-      }
-    } catch (e) {
-      // User cancelled or share failed, continue to LinkedIn
-      console.log('Web share not available or cancelled');
-    }
-
-    // Copy caption to clipboard
-    try { 
-      await navigator.clipboard.writeText(currentCaption); 
-    } catch (e) {
-      console.log('Clipboard write failed');
-    }
-    
-    // LinkedIn sharing - try different approaches
+    // Detect device type
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const linkedInText = encodeURIComponent(currentCaption);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isAndroid = /Android/i.test(navigator.userAgent);
     
-    if (isMobile) {
-      // Mobile: try app deep link first
-      alert('Certificate downloaded and caption copied! Opening LinkedIn app...');
-      // LinkedIn app deep link
-      window.location.href = `linkedin://sharing/share-offsite/?url=${encodeURIComponent('https://aashayein.org')}`;
-      
-      // Fallback to mobile web if app doesn't open
+    // Direct LinkedIn sharing without prompts
+    if (isIOS) {
+      // iOS: Try LinkedIn app URL scheme
+      window.location.href = 'linkedin://';
       setTimeout(() => {
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://aashayein.org')}`, '_blank');
-      }, 2000);
+        // If app doesn't open, go to App Store or web
+        window.location.href = 'https://www.linkedin.com/feed/';
+      }, 500);
+    } else if (isAndroid) {
+      // Android: Try LinkedIn intent
+      try {
+        window.location.href = 'intent://linkedin.com/feed/#Intent;scheme=https;package=com.linkedin.android;end';
+      } catch (e) {
+        window.location.href = 'https://www.linkedin.com/feed/';
+      }
     } else {
-      // Desktop: open LinkedIn composer
-      alert('Certificate downloaded and caption copied!\n\nLinkedIn will open - paste the caption and attach the downloaded certificate image.');
-      window.open('https://www.linkedin.com/feed/?shareActive=true', '_blank');
+      // Desktop: Direct to LinkedIn feed/composer
+      window.open('https://www.linkedin.com/feed/', '_blank');
     }
   };
 
