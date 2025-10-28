@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-// import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const CERT_IMAGE_SRC = '/official%20offer%20letter.png';
 
@@ -17,27 +17,62 @@ export default function DonorCertificatesPage() {
   const [caption, setCaption] = useState('');
   const [isGen, setIsGen] = useState(false);
   const [genError, setGenError] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const router = useRouter();
 
-  // Initialize name from query param or localStorage
+  // Security: Check if user came from form submission
   useEffect(() => {
     try {
       // Read from query string on client without useSearchParams to avoid CSR bailout
       const qp = new URLSearchParams(window.location.search);
       const qpName = qp.get('name');
+      
       if (qpName && qpName.trim()) {
+        // User came with a name in URL - authorized
         setName(qpName.trim());
+        setIsAuthorized(true);
         try { localStorage.setItem('donorName', qpName.trim()); } catch {}
       } else {
+        // Check localStorage as fallback
         const saved = localStorage.getItem('donorName');
-        if (saved) setName(saved);
+        if (saved && saved.trim()) {
+          setName(saved);
+          setIsAuthorized(true);
+        } else {
+          // No name found - redirect to donor entries
+          alert('Please register first to get your certificate!');
+          router.push('/donorentries');
+          return;
+        }
       }
 
       const savedOffset = localStorage.getItem('certYOffset');
       if (savedOffset) setOffsetY(parseFloat(savedOffset));
       const savedScale = localStorage.getItem('certFontScale');
       if (savedScale) setFontScale(parseFloat(savedScale));
-    } catch {}
-  }, []);
+    } catch (e) {
+      // Error accessing localStorage or URL - redirect to safety
+      router.push('/donorentries');
+    }
+  }, [router]);
+
+  // Don't render anything until authorization is checked
+  if (!isAuthorized) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'linear-gradient(135deg, #fff5f5 0%, #ffe0e0 50%, #fff0f0 100%)',
+        fontSize: '1.5rem',
+        color: '#b91c1c',
+        fontWeight: 600
+      }}>
+        Redirecting to registration...
+      </div>
+    );
+  }
 
   const handleDownload = async () => {
     const blob = await generateCertificateBlob();

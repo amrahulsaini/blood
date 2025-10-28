@@ -24,10 +24,7 @@ export default function Home() {
 
         <div className="coming-soon-links">
           <a href="/donorentries" className="link-button donor-entries">
-            Donor Entries Portal
-          </a>
-          <a href="/donorcertificates" className="link-button donor-certs">
-            Generate Certificates
+            Donor Registration Portal
           </a>
         </div>
 

@@ -147,11 +147,13 @@ export default function DonorEntries() {
       setCountdown(current);
       if (current <= 0) {
         clearInterval(interval);
-        router.push('/donorcertificates');
+        // Pass the name as URL parameter for security
+        const encodedName = encodeURIComponent(registeredName || '');
+        router.push(`/donorcertificates?name=${encodedName}`);
       }
     }, 1000);
     return () => clearInterval(interval);
-  }, [showDialog, router]);
+  }, [showDialog, router, registeredName]);
 
   return (
     <div className={styles.pageContainer}>
