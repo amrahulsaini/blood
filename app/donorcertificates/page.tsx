@@ -89,9 +89,9 @@ export default function DonorCertificatesPage() {
         justifyContent: 'center',
         flexDirection: 'column',
         gap: '1rem',
-        background: 'linear-gradient(135deg, #fff5f5 0%, #ffe0e0 50%, #fff0f0 100%)',
+        background: 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 50%, #e0f2fe 100%)',
         fontSize: '1.5rem',
-        color: '#b91c1c',
+        color: '#0e7490',
         fontWeight: 600
       }}>
         {shouldRedirect ? (
@@ -133,7 +133,7 @@ export default function DonorCertificatesPage() {
     ctx.drawImage(img, 0, 0, width, height);
     const baseFontSize = Math.round(width * 0.035 * Math.max(0.6, Math.min(1.6, fontScale)));
     ctx.font = `italic 700 ${baseFontSize}px Georgia, 'Times New Roman', Times, serif`;
-    ctx.fillStyle = '#b91c1c';
+    ctx.fillStyle = '#0e7490';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const x = Math.round(width * NAME_X_CENTER_RATIO);
@@ -292,11 +292,11 @@ export default function DonorCertificatesPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'linear-gradient(135deg, #fff5f5 0%, #ffe0e0 50%, #fff0f0 100%)'
+      background: 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 50%, #e0f2fe 100%)'
     }}>
       <div style={{
         background: '#fff',
-        border: '2px solid #fecaca',
+        border: '2px solid #a7f3d0',
         borderRadius: 16,
         padding: '1rem',
         color: '#7f1d1d',
@@ -318,7 +318,7 @@ export default function DonorCertificatesPage() {
               transform: 'translate(-50%, -50%)',
               width: '72%',
               textAlign: 'center',
-              color: '#b91c1c',
+              color: '#0e7490',
               fontFamily: "Georgia, 'Times New Roman', Times, serif",
               fontStyle: 'italic',
               fontWeight: 700,
@@ -345,7 +345,7 @@ export default function DonorCertificatesPage() {
         }}>
           <button onClick={handleDownload} style={{
             padding: '0.75rem 1.25rem',
-            background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+            background: 'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
             color: '#fff',
             border: 'none',
             borderRadius: 10,
@@ -363,8 +363,8 @@ export default function DonorCertificatesPage() {
           <button onClick={handleGenerateCaption} disabled={isGen} style={{
             padding: '0.75rem 1.25rem',
             background: isGen ? '#f5f5f5' : '#fff',
-            color: '#b91c1c',
-            border: '2px solid #fecaca',
+            color: '#0e7490',
+            border: '2px solid #a7f3d0',
             borderRadius: 10,
             fontWeight: 700,
             fontSize: '0.95rem',
@@ -381,8 +381,8 @@ export default function DonorCertificatesPage() {
           <button onClick={handleCopyCaption} disabled={!caption} style={{
             padding: '0.75rem 1.25rem',
             background: caption ? '#fff' : '#f5f5f5',
-            color: '#b91c1c',
-            border: '2px solid #fecaca',
+            color: '#0e7490',
+            border: '2px solid #a7f3d0',
             borderRadius: 10,
             fontWeight: 700,
             fontSize: '0.95rem',
@@ -420,10 +420,10 @@ export default function DonorCertificatesPage() {
         <div style={{
           marginTop: '1rem',
           padding: '0.9rem 1rem',
-          border: '2px solid #fecaca',
+          border: '2px solid #a7f3d0',
           borderRadius: 12,
           background: '#fff',
-          color: '#450a0a',
+          color: '#164e63',
           minHeight: 48,
           maxWidth: 'min(1000px, 92vw)',
           fontSize: '0.95rem',
