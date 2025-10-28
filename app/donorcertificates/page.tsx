@@ -64,6 +64,14 @@ export default function DonorCertificatesPage() {
     } catch {}
   }, []);
 
+  // Load saved caption
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('certCaption');
+      if (saved) setCaption(saved);
+    } catch {}
+  }, []);
+
   // Handle redirect in separate effect
   useEffect(() => {
     if (shouldRedirect) {
@@ -173,13 +181,6 @@ export default function DonorCertificatesPage() {
       setIsGen(false);
     }
   };
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem('certCaption');
-      if (saved) setCaption(saved);
-    } catch {}
-  }, []);
 
   const handleCopyCaption = async () => {
     try {
