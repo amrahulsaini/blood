@@ -154,7 +154,7 @@ export default function DonorCertificatesPage() {
         setIsGen(false);
       }
       // Wait a moment for caption to be set
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 800));
     }
 
     // Download the certificate automatically
@@ -168,40 +168,53 @@ export default function DonorCertificatesPage() {
       setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
-    // Try Web Share API first (works on mobile)
+    // Get current caption for sharing
+    const currentCaption = caption || 'Proud to support blood donation. #BloodDonation #SaveLives';
+
+    // Try Web Share API first (best for mobile with file + text)
     try {
-      if (blob && 'share' in navigator && (navigator as any).canShare?.({ files: [new File([blob], 'certificate.png', { type: 'image/png' })] })) {
+      if (blob && 'share' in navigator) {
         const file = new File([blob], 'certificate.png', { type: 'image/png' });
-        await (navigator as any).share({
-          files: [file],
-          text: caption || undefined,
-          title: 'Aashayein – Certificate',
-        });
-        return;
+        const canShareFiles = (navigator as any).canShare?.({ files: [file] });
+        
+        if (canShareFiles) {
+          await (navigator as any).share({
+            files: [file],
+            text: currentCaption,
+            title: 'Blood Donation Certificate',
+          });
+          return; // Successfully shared via native share
+        }
       }
     } catch (e) {
-      // fall through to LinkedIn deep link
+      // User cancelled or share failed, continue to LinkedIn
+      console.log('Web share not available or cancelled');
     }
 
-    // Copy caption and try LinkedIn deep link / app
-    if (caption) {
-      try { await navigator.clipboard.writeText(caption); } catch {}
+    // Copy caption to clipboard
+    try { 
+      await navigator.clipboard.writeText(currentCaption); 
+    } catch (e) {
+      console.log('Clipboard write failed');
     }
     
-    // Try LinkedIn app deep link (opens app on mobile if installed)
-    const linkedInText = encodeURIComponent(caption || 'Check out my certificate!');
+    // LinkedIn sharing - try different approaches
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const linkedInText = encodeURIComponent(currentCaption);
     
     if (isMobile) {
-      // Try app deep link first on mobile
-      window.location.href = `linkedin://shareArticle?mini=true&text=${linkedInText}`;
-      // Fallback to web after short delay if app doesn't open
+      // Mobile: try app deep link first
+      alert('Certificate downloaded and caption copied! Opening LinkedIn app...');
+      // LinkedIn app deep link
+      window.location.href = `linkedin://sharing/share-offsite/?url=${encodeURIComponent('https://aashayein.org')}`;
+      
+      // Fallback to mobile web if app doesn't open
       setTimeout(() => {
-        window.open(`https://www.linkedin.com/feed/?shareActive=true&text=${linkedInText}`, '_blank');
-      }, 1500);
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://aashayein.org')}`, '_blank');
+      }, 2000);
     } else {
-      // Desktop: open web composer
-      alert('Certificate downloaded! Caption copied. LinkedIn will open—paste the caption and attach the downloaded image.');
+      // Desktop: open LinkedIn composer
+      alert('Certificate downloaded and caption copied!\n\nLinkedIn will open - paste the caption and attach the downloaded certificate image.');
       window.open('https://www.linkedin.com/feed/?shareActive=true', '_blank');
     }
   };
@@ -252,63 +265,73 @@ export default function DonorCertificatesPage() {
           >
             {name || 'Donor'}
           </div>
-
-          {/* Action buttons overlay at bottom of certificate */}
-          <div style={{
-            position: 'absolute',
-            bottom: '1.5rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            display: 'flex',
-            gap: '0.6rem',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            width: '90%',
-            maxWidth: '600px'
-          }}>
-            <button onClick={handleDownload} style={{
-              padding: '0.65rem 1rem',
-              background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              boxShadow: '0 8px 20px rgba(0,0,0,0.25)',
-              cursor: 'pointer'
-            }}>
-              Download
-            </button>
-            <button onClick={handleGenerateCaption} disabled={isGen} style={{
-              padding: '0.65rem 1rem',
-              background: isGen ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.95)',
-              color: '#b91c1c',
-              border: '2px solid #fecaca',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
-              cursor: isGen ? 'not-allowed' : 'pointer'
-            }}>
-              {isGen ? 'Generating…' : 'Generate Caption'}
-            </button>
-            <button onClick={handleShareLinkedIn} disabled={isGen} style={{
-              padding: '0.65rem 1rem',
-              background: isGen ? 'rgba(10,102,194,0.7)' : 'linear-gradient(135deg, #0a66c2 0%, #054a8b 100%)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: 8,
-              fontWeight: 700,
-              fontSize: '0.9rem',
-              boxShadow: '0 8px 20px rgba(0,0,0,0.25)',
-              cursor: isGen ? 'not-allowed' : 'pointer'
-            }}>
-              Share on LinkedIn
-            </button>
-          </div>
         </div>
 
-        {/* Caption preview below certificate */}
+        {/* Action buttons below certificate */}
+        <div style={{ 
+          display: 'flex', 
+          gap: '0.75rem', 
+          marginTop: '1.25rem', 
+          alignItems: 'center', 
+          flexWrap: 'wrap',
+          justifyContent: 'center'
+        }}>
+          <button onClick={handleDownload} style={{
+            padding: '0.75rem 1.25rem',
+            background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 10,
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            boxShadow: '0 4px 12px rgba(220,38,38,0.3)',
+            cursor: 'pointer',
+            transition: 'transform 0.2s',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            Download Certificate
+          </button>
+          <button onClick={handleGenerateCaption} disabled={isGen} style={{
+            padding: '0.75rem 1.25rem',
+            background: isGen ? '#f5f5f5' : '#fff',
+            color: '#b91c1c',
+            border: '2px solid #fecaca',
+            borderRadius: 10,
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            cursor: isGen ? 'not-allowed' : 'pointer',
+            transition: 'transform 0.2s',
+            opacity: isGen ? 0.7 : 1
+          }}
+          onMouseEnter={(e) => !isGen && (e.currentTarget.style.transform = 'translateY(-2px)')}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            {isGen ? 'Generating Caption…' : 'Generate Caption'}
+          </button>
+          <button onClick={handleShareLinkedIn} disabled={isGen} style={{
+            padding: '0.75rem 1.25rem',
+            background: isGen ? '#6b95c2' : 'linear-gradient(135deg, #0a66c2 0%, #054a8b 100%)',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 10,
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            boxShadow: '0 4px 12px rgba(10,102,194,0.3)',
+            cursor: isGen ? 'not-allowed' : 'pointer',
+            transition: 'transform 0.2s',
+            opacity: isGen ? 0.7 : 1
+          }}
+          onMouseEnter={(e) => !isGen && (e.currentTarget.style.transform = 'translateY(-2px)')}
+          onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            Post on LinkedIn
+          </button>
+        </div>
+
+        {/* Caption preview below buttons */}
         <div style={{
           marginTop: '1rem',
           padding: '0.9rem 1rem',
