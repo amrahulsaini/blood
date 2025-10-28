@@ -160,14 +160,7 @@ export default function DonorCertificatesPage() {
     // Get current caption for sharing
     const currentCaption = caption || `🎉 Thrilled to join Aashayein – The Life Saviours as a registered blood donor! Grateful for this opportunity to save lives. Every drop counts! ❤️💉 #BloodDonation #SaveLives #Aashayein #BeTheChange`;
 
-    // Copy caption to clipboard silently
-    try { 
-      await navigator.clipboard.writeText(currentCaption); 
-    } catch (e) {
-      console.log('Clipboard write failed');
-    }
-
-    // Download the certificate automatically (silent)
+    // Generate and download the certificate
     const blob = await generateCertificateBlob();
     if (blob) {
       const url = URL.createObjectURL(blob);
@@ -178,28 +171,54 @@ export default function DonorCertificatesPage() {
       setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
-    // Detect device type
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    
-    // Direct LinkedIn sharing without prompts
-    if (isIOS) {
-      // iOS: Try LinkedIn app URL scheme
-      window.location.href = 'linkedin://';
-      setTimeout(() => {
-        // If app doesn't open, go to App Store or web
-        window.location.href = 'https://www.linkedin.com/feed/';
-      }, 500);
-    } else if (isAndroid) {
-      // Android: Try LinkedIn intent
+    // Try native Web Share API first (works best on mobile with image + text)
+    if ('share' in navigator && blob) {
       try {
-        window.location.href = 'intent://linkedin.com/feed/#Intent;scheme=https;package=com.linkedin.android;end';
-      } catch (e) {
-        window.location.href = 'https://www.linkedin.com/feed/';
+        const file = new File([blob], `${(name || 'donor').replace(/\s+/g, '_')}_certificate.png`, { type: 'image/png' });
+        
+        // Check if we can share files
+        if ((navigator as any).canShare && (navigator as any).canShare({ files: [file] })) {
+          await (navigator as any).share({
+            files: [file],
+            text: currentCaption,
+            title: 'Blood Donation Certificate - Aashayein'
+          });
+          return; // Successfully shared - user can choose LinkedIn from share menu
+        }
+      } catch (err) {
+        console.log('Web Share API failed or cancelled:', err);
+        // Continue to fallback methods
       }
+    }
+
+    // Copy caption to clipboard for manual pasting
+    try { 
+      await navigator.clipboard.writeText(currentCaption);
+      console.log('Caption copied to clipboard'); 
+    } catch (e) {
+      console.log('Clipboard write failed');
+    }
+
+    // Detect device and open LinkedIn appropriately
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    // Show instruction to user
+    const instruction = isMobile 
+      ? 'Certificate downloaded! Caption copied!\n\nLinkedIn app will open - create a new post, paste the caption, and attach the downloaded certificate image from your gallery.'
+      : 'Certificate downloaded! Caption copied!\n\nLinkedIn will open - create a new post, paste the caption (Ctrl+V), and attach the downloaded certificate image.';
+    
+    alert(instruction);
+
+    // Open LinkedIn
+    if (isMobile) {
+      // Try to open LinkedIn app on mobile
+      window.location.href = 'linkedin://feed';
+      // Fallback to web after delay
+      setTimeout(() => {
+        window.open('https://www.linkedin.com/feed/', '_blank');
+      }, 1500);
     } else {
-      // Desktop: Direct to LinkedIn feed/composer
+      // Desktop: Open LinkedIn in new tab
       window.open('https://www.linkedin.com/feed/', '_blank');
     }
   };
