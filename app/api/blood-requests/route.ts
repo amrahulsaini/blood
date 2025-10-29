@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import { sendEmail } from '@/app/lib/email/mailer';
-import { bloodRequestConfirmationEmail } from '@/app/lib/email/templates';
+import { requestCreatedEmail } from '@/app/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,27 +55,34 @@ export async function POST(request: NextRequest) {
       status: 'pending',
     };
 
+    // Send confirmation email
     try {
-      const emailHtml = bloodRequestConfirmationEmail({
+      const emailHtml = requestCreatedEmail({
         patientName: newRequest.patientName,
         requestId: String(newRequest.id),
         bloodGroup: newRequest.bloodGroup,
         hospitalName: newRequest.hospitalName,
         locality: newRequest.locality,
         emergencyState: newRequest.emergencyState,
-        emergencyContact: newRequest.emergencyContact,
       });
 
       await sendEmail({
         to: newRequest.email,
-        subject: `Blood Request Confirmation - ${newRequest.bloodGroup} Needed`,
+        subject: `✅ Blood Request Confirmed - ${newRequest.bloodGroup} | Request #${newRequest.id}`,
         html: emailHtml,
       });
+
+      console.log(`Confirmation email sent to ${newRequest.email}`);
     } catch (emailError) {
       console.error('Failed to send confirmation email:', emailError);
+      // Don't fail the request if email fails
     }
 
-    return NextResponse.json({ message: 'Blood request submitted successfully', data: newRequest }, { status: 200 });
+    return NextResponse.json({ 
+      message: 'Blood request submitted successfully', 
+      requestId: String(newRequest.id),
+      data: newRequest 
+    }, { status: 200 });
   } catch (error) {
     console.error('Error creating blood request:', error);
     return NextResponse.json({ error: 'Failed to create blood request' }, { status: 500 });

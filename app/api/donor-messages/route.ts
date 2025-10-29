@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { sendEmail } from '@/app/lib/email/mailer';
+import { donorMatchedEmail } from '@/app/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,11 +15,65 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Get blood request details
+    const bloodRequests = await query<RowDataPacket[]>(
+      'SELECT patient_name, blood_group, hospital_name, city FROM blood_requests WHERE id = ?',
+      [body.requestId]
+    );
+
+    if (bloodRequests.length === 0) {
+      return NextResponse.json({ error: 'Blood request not found' }, { status: 404 });
+    }
+
+    const bloodRequest = bloodRequests[0];
+
+    // Insert donor message
     const result = await query<ResultSetHeader>(
       `INSERT INTO donor_messages (request_id, donor_name, donor_email, donor_phone, message, willing_to_donate, status) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [body.requestId, body.donorName, body.requesterEmail, body.donorMobile, body.message, body.consent, 'pending']
     );
+
+    // Create notification for the requester
+    try {
+      await query(
+        `INSERT INTO notifications (title, message, type, related_id, related_type, priority, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+        [
+          `New Donor Response - ${body.donorBloodGroup}`,
+          `${body.donorName} has responded to your blood request for ${bloodRequest.patient_name}. Contact: ${body.donorMobile}`,
+          'request_match',
+          body.requestId,
+          'blood_request',
+          body.consent ? 'high' : 'medium'
+        ]
+      );
+    } catch (notifError) {
+      console.error('Error creating notification:', notifError);
+    }
+
+    // Send email to requester
+    try {
+      const emailHtml = donorMatchedEmail({
+        patientName: bloodRequest.patient_name,
+        donorName: body.donorName,
+        bloodGroup: body.donorBloodGroup,
+        hospitalName: bloodRequest.hospital_name,
+        locality: bloodRequest.city,
+        emergencyState: 'normal',
+        emergencyContact: body.donorMobile,
+        patientContact: body.requesterMobile,
+        requestId: body.requestId,
+      });
+
+      await sendEmail({
+        to: body.requesterEmail,
+        subject: `Donor Found! ${body.donorBloodGroup} Blood Available`,
+        html: emailHtml,
+      });
+    } catch (emailError) {
+      console.error('Failed to send donor matched email:', emailError);
+    }
 
     const newMessage = {
       id: result.insertId,

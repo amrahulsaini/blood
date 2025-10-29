@@ -16,9 +16,11 @@ import {
   ArrowLeft,
   Edit2,
   MessageCircle,
-  Clock
+  Clock,
+  ShieldAlert
 } from 'lucide-react';
 import styles from './profile.module.css';
+import { getSession, hasActiveSession, isRequester } from '../utils/auth';
 
 interface ProfileData {
   requestId: string;
@@ -59,42 +61,47 @@ export default function ProfilePage() {
   const [editedData, setEditedData] = useState<ProfileData | null>(null);
   const [profileImage, setProfileImage] = useState<string>('');
   const [messages, setMessages] = useState<DonorMessage[]>([]);
+  const [isVerifying, setIsVerifying] = useState(true);
 
   useEffect(() => {
-    // Load session data
-    const sessionJson = localStorage.getItem('userRequestSession');
-    if (!sessionJson) {
-      alert('No active session found. Please submit a blood request first.');
+    // Check for active session
+    if (!hasActiveSession()) {
+      alert('⚠️ No active session found. Please submit a blood request first.');
       router.push('/request-blood');
       return;
     }
 
-    const session = JSON.parse(sessionJson);
+    const session = getSession();
     
-    // Check if session is expired (30 days)
-    const expiresAt = new Date(session.expiresAt);
-    if (expiresAt < new Date()) {
-      localStorage.removeItem('userRequestSession');
-      alert('Your session has expired. Please submit a new request.');
+    if (!session) {
+      alert('⚠️ Session validation failed. Please submit a blood request.');
       router.push('/request-blood');
       return;
     }
 
-    // Load profile data
+    // Verify this is a requester session - requestId should exist
+    if (!session.requestId) {
+      alert('⚠️ Invalid session. Please submit a blood request.');
+      router.push('/request-blood');
+      return;
+    }
+
+    // Load profile data from localStorage (could also fetch from API)
     const savedProfile = localStorage.getItem('userProfile_' + session.requestId);
     const profile = savedProfile ? JSON.parse(savedProfile) : session;
     
     setProfileData(profile);
     setEditedData(profile);
     setProfileImage(profile.profileImage || '');
+    setIsVerifying(false);
 
-    // Fetch messages from API based on email and mobile
-    fetchMessages(profile.email, profile.contact);
+    // Fetch messages from API based on requestId
+    fetchMessages(session.requestId);
   }, [router]);
 
-  const fetchMessages = async (email: string, mobile: string) => {
+  const fetchMessages = async (requestId: string) => {
     try {
-      const response = await fetch(`/api/donor-messages?email=${encodeURIComponent(email)}&mobile=${encodeURIComponent(mobile)}`);
+      const response = await fetch(`/api/donor-messages?requestId=${encodeURIComponent(requestId)}`);
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
@@ -184,11 +191,20 @@ export default function ProfilePage() {
         <div className={styles.bloodDrop} style={{top: '80%', right: '15%'}}></div>
       </div>
 
-      {/* Back Button */}
-      <button onClick={() => router.push('/')} className={styles.backButton}>
-        <ArrowLeft size={20} />
-        <span>Back to Home</span>
-      </button>
+      {/* Verification Loading State */}
+      {isVerifying ? (
+        <div className={styles.verifyingContainer}>
+          <ShieldAlert size={64} className={styles.verifyingIcon} />
+          <h2>Verifying Session...</h2>
+          <p>Please wait while we validate your access</p>
+        </div>
+      ) : (
+        <>
+          {/* Back Button */}
+          <button onClick={() => router.push('/')} className={styles.backButton}>
+            <ArrowLeft size={20} />
+            <span>Back to Home</span>
+          </button>
 
       <div className={styles.container}>
         {/* Header */}
@@ -518,6 +534,8 @@ export default function ProfilePage() {
           )}
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 }

@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { Bell, X, Droplet, CheckCircle, AlertCircle, Clock } from 'lucide-react';
 import styles from './NotificationBell.module.css';
+import { getSession } from '../utils/auth';
 
 interface Notification {
   id: string;
-  type: 'success' | 'pending' | 'urgent' | 'info';
+  user_email: string;
   title: string;
   message: string;
-  timestamp: string;
-  read: boolean;
-  requestId?: string;
+  type: 'success' | 'info' | 'urgent' | 'warning';
+  related_id?: string;
+  priority: 'low' | 'normal' | 'high';
+  read_at?: string | null;
+  created_at: string;
 }
 
 export default function NotificationBell() {
@@ -19,23 +22,13 @@ export default function NotificationBell() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Load notifications from localStorage
+  // Fetch notifications from API
   useEffect(() => {
-    const storedNotifications = localStorage.getItem('bloodNotifications');
-    if (storedNotifications) {
-      const parsed = JSON.parse(storedNotifications);
-      setNotifications(parsed);
-      updateUnreadCount(parsed);
-    }
+    fetchNotifications();
 
     // Listen for new notifications
     const handleNewNotification = () => {
-      const storedNotifications = localStorage.getItem('bloodNotifications');
-      if (storedNotifications) {
-        const parsed = JSON.parse(storedNotifications);
-        setNotifications(parsed);
-        updateUnreadCount(parsed);
-      }
+      fetchNotifications();
     };
 
     window.addEventListener('newNotification', handleNewNotification);
@@ -43,7 +36,7 @@ export default function NotificationBell() {
 
     // Check for new notifications periodically
     const interval = setInterval(() => {
-      checkForNewNotifications();
+      fetchNotifications();
     }, 30000); // Check every 30 seconds
 
     return () => {
@@ -53,68 +46,99 @@ export default function NotificationBell() {
     };
   }, []);
 
-  // Update unread count
-  const updateUnreadCount = (notifs: Notification[]) => {
-    const count = notifs.filter(n => !n.read).length;
-    setUnreadCount(count);
-  };
+  const fetchNotifications = async () => {
+    const session = getSession();
+    if (!session || !session.email) return;
 
-  // Check for new notifications from user's requests
-  const checkForNewNotifications = () => {
-    const userRequests = localStorage.getItem('userBloodRequests');
-    if (!userRequests) return;
-
-    const requests = JSON.parse(userRequests);
-    // Here you would check the status of each request
-    // For now, we'll just keep existing notifications
-  };
-
-  // Add notification
-  const addNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
-    const newNotification: Notification = {
-      ...notification,
-      id: `NOTIF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date().toISOString(),
-      read: false,
-    };
-
-    const updated = [newNotification, ...notifications];
-    setNotifications(updated);
-    localStorage.setItem('bloodNotifications', JSON.stringify(updated));
-    updateUnreadCount(updated);
+    try {
+      const response = await fetch(`/api/notifications?email=${encodeURIComponent(session.email)}&unreadOnly=true`);
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+        const unread = data.filter((n: Notification) => !n.read_at).length;
+        setUnreadCount(unread);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    }
   };
 
   // Mark notification as read
-  const markAsRead = (id: string) => {
-    const updated = notifications.map(n => 
-      n.id === id ? { ...n, read: true } : n
-    );
-    setNotifications(updated);
-    localStorage.setItem('bloodNotifications', JSON.stringify(updated));
-    updateUnreadCount(updated);
+  const markAsRead = async (id: string) => {
+    try {
+      const response = await fetch('/api/notifications', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (response.ok) {
+        // Update local state
+        const updated = notifications.map(n => 
+          n.id === id ? { ...n, read_at: new Date().toISOString() } : n
+        );
+        setNotifications(updated);
+        const unread = updated.filter(n => !n.read_at).length;
+        setUnreadCount(unread);
+      }
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
   };
 
   // Mark all as read
-  const markAllAsRead = () => {
-    const updated = notifications.map(n => ({ ...n, read: true }));
-    setNotifications(updated);
-    localStorage.setItem('bloodNotifications', JSON.stringify(updated));
-    setUnreadCount(0);
+  const markAllAsRead = async () => {
+    const session = getSession();
+    if (!session || !session.email) return;
+
+    try {
+      await Promise.all(
+        notifications
+          .filter(n => !n.read_at)
+          .map(n => markAsRead(n.id))
+      );
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark all as read:', error);
+    }
   };
 
   // Delete notification
-  const deleteNotification = (id: string) => {
-    const updated = notifications.filter(n => n.id !== id);
-    setNotifications(updated);
-    localStorage.setItem('bloodNotifications', JSON.stringify(updated));
-    updateUnreadCount(updated);
+  const deleteNotification = async (id: string) => {
+    try {
+      const response = await fetch(`/api/notifications?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        const updated = notifications.filter(n => n.id !== id);
+        setNotifications(updated);
+        const unread = updated.filter(n => !n.read_at).length;
+        setUnreadCount(unread);
+      }
+    } catch (error) {
+      console.error('Failed to delete notification:', error);
+    }
   };
 
-  // Clear all notifications
-  const clearAll = () => {
-    setNotifications([]);
-    localStorage.setItem('bloodNotifications', JSON.stringify([]));
-    setUnreadCount(0);
+  // Clear all read notifications
+  const clearAll = async () => {
+    const session = getSession();
+    if (!session || !session.email) return;
+
+    try {
+      const response = await fetch(`/api/notifications?email=${encodeURIComponent(session.email)}&clearAll=true`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchNotifications();
+      }
+    } catch (error) {
+      console.error('Failed to clear notifications:', error);
+    }
   };
 
   // Get icon based on type
@@ -124,7 +148,7 @@ export default function NotificationBell() {
         return <CheckCircle size={20} color="#4CAF50" />;
       case 'urgent':
         return <AlertCircle size={20} color="#DC143C" />;
-      case 'pending':
+      case 'warning':
         return <Clock size={20} color="#FFA500" />;
       default:
         return <Droplet size={20} color="#87CEEB" />;
@@ -187,7 +211,7 @@ export default function NotificationBell() {
                 notifications.map((notification) => (
                   <div 
                     key={notification.id} 
-                    className={`${styles.notificationItem} ${!notification.read ? styles.unread : ''}`}
+                    className={`${styles.notificationItem} ${!notification.read_at ? styles.unread : ''}`}
                     onClick={() => markAsRead(notification.id)}
                   >
                     <div className={styles.iconWrapper}>
@@ -207,7 +231,7 @@ export default function NotificationBell() {
                         </button>
                       </div>
                       <p>{notification.message}</p>
-                      <span className={styles.time}>{formatTime(notification.timestamp)}</span>
+                      <span className={styles.time}>{formatTime(notification.created_at)}</span>
                     </div>
                   </div>
                 ))
@@ -219,22 +243,3 @@ export default function NotificationBell() {
     </div>
   );
 }
-
-// Export function to add notification from anywhere
-export const addBloodNotification = (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => {
-  const storedNotifications = localStorage.getItem('bloodNotifications');
-  const notifications = storedNotifications ? JSON.parse(storedNotifications) : [];
-  
-  const newNotification: Notification = {
-    ...notification,
-    id: `NOTIF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    timestamp: new Date().toISOString(),
-    read: false,
-  };
-
-  const updated = [newNotification, ...notifications];
-  localStorage.setItem('bloodNotifications', JSON.stringify(updated));
-  
-  // Dispatch custom event to update UI
-  window.dispatchEvent(new CustomEvent('newNotification'));
-};

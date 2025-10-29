@@ -15,6 +15,7 @@ import {
   Send
 } from 'lucide-react';
 import styles from './request-blood.module.css';
+import { createSession } from '../utils/auth';
 
 interface RequestFormData {
   patientName: string;
@@ -91,51 +92,54 @@ export default function RequestBloodPage() {
       
       console.log('Blood Request Submitted:', data);
       
-      // Store user session - expires in 30 days
-      const sessionData = {
+      // Create user session using auth utility
+      createSession({
         requestId: data.requestId,
-        patientName: formData.patientName,
-        age: formData.age,
-        contact: formData.contact,
         email: formData.email,
+        contact: formData.contact,
+        patientName: formData.patientName,
+        bloodGroup: formData.bloodGroup,
+        age: formData.age,
         hospitalName: formData.hospitalName,
         locality: formData.locality,
-        bloodGroup: formData.bloodGroup,
         emergencyContact: formData.emergencyContact,
         emergencyState: formData.emergencyState,
         additionalInfo: formData.additionalInfo,
-        submittedAt: new Date().toISOString(),
-        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
-      };
+      });
       
-      // Store current session (for profile page)
-      localStorage.setItem('userRequestSession', JSON.stringify(sessionData));
-      
-      // Store user requests array
+      // Store user requests array for history
       const existingRequests = localStorage.getItem('userBloodRequests');
       const requests = existingRequests ? JSON.parse(existingRequests) : [];
-      requests.push(sessionData);
+      requests.push({
+        requestId: data.requestId,
+        patientName: formData.patientName,
+        bloodGroup: formData.bloodGroup,
+        hospitalName: formData.hospitalName,
+        locality: formData.locality,
+        submittedAt: new Date().toISOString(),
+        emergencyState: formData.emergencyState,
+      });
       localStorage.setItem('userBloodRequests', JSON.stringify(requests));
       
-      // Add notification
-      const notificationData = {
-        type: formData.emergencyState === 'critical' ? 'urgent' : 'pending' as 'urgent' | 'pending',
-        title: 'Blood Request Submitted',
-        message: `Your request for ${formData.bloodGroup} blood at ${formData.hospitalName} is now pending. We're connecting you with nearby donors.`,
-        requestId: data.requestId,
-      };
-      
-      // Store notification
-      const existingNotifications = localStorage.getItem('bloodNotifications');
-      const notifications = existingNotifications ? JSON.parse(existingNotifications) : [];
-      const newNotification = {
-        ...notificationData,
-        id: `NOTIF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        timestamp: new Date().toISOString(),
-        read: false,
-      };
-      notifications.unshift(newNotification);
-      localStorage.setItem('bloodNotifications', JSON.stringify(notifications));
+      // Create notification via API
+      try {
+        await fetch('/api/notifications', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userEmail: formData.email,
+            title: 'Blood Request Submitted',
+            message: `Your request for ${formData.bloodGroup} blood at ${formData.hospitalName} is now pending. We're connecting you with nearby donors.`,
+            type: formData.emergencyState === 'critical' ? 'urgent' : 'info',
+            relatedId: data.requestId,
+            priority: formData.emergencyState === 'critical' ? 'high' : 'normal',
+          }),
+        });
+      } catch (notifError) {
+        console.error('Failed to create notification:', notifError);
+      }
       
       // Dispatch event for notification bell
       if (typeof window !== 'undefined') {

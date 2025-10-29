@@ -29,9 +29,24 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await query<ResultSetHeader>(
-      `INSERT INTO donor_entries (full_name, email, phone, blood_group, age, gender, address, city, state, pincode, is_available, status) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [body.fullName, normalizedEmail, normalizedMobile, body.bloodGroup, parseInt(body.age), 'Male', body.address, 'Delhi', 'Delhi', '000000', true, 'approved']
+      `INSERT INTO donor_entries (full_name, email, phone, blood_group, donor_type, batch, age, gender, address, city, state, pincode, is_available, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        body.fullName, 
+        normalizedEmail, 
+        normalizedMobile, 
+        body.bloodGroup, 
+        body.donorType,
+        body.batch || null,
+        parseInt(body.age), 
+        'Male', 
+        body.address, 
+        'Delhi', 
+        'Delhi', 
+        '000000', 
+        true, 
+        'approved'
+      ]
     );
 
     return NextResponse.json({ message: 'Donor entry saved successfully', data: { id: result.insertId, ...body, timestamp: new Date().toISOString() } }, { status: 200 });

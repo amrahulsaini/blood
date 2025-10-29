@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Search, Filter, Phone, MessageCircle, MapPin, Clock, Droplet, AlertCircle, X, CheckCircle } from 'lucide-react';
+import { Search, Filter, Phone, MessageCircle, MapPin, Clock, Droplet, AlertCircle, X, CheckCircle, ShieldAlert } from 'lucide-react';
 import styles from './donate-blood.module.css';
+import { canDonateTo, type BloodGroup, isValidBloodGroup } from '../utils/bloodCompatibility';
+import { getSession, canUserDonate } from '../utils/auth';
 
 interface BloodRequest {
   id: string;
@@ -26,8 +28,10 @@ export default function DonateBloodPage() {
   const [filteredRequests, setFilteredRequests] = useState<BloodRequest[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedBloodGroup, setSelectedBloodGroup] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [cities, setCities] = useState<string[]>([]);
+  const [userSession, setUserSession] = useState<any>(null);
   
   // Message modal state
   const [showMessageModal, setShowMessageModal] = useState(false);
@@ -40,13 +44,18 @@ export default function DonateBloodPage() {
   const [isSending, setIsSending] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
 
+  const bloodGroups: BloodGroup[] = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
   useEffect(() => {
+    // Get user session to prevent self-donation
+    const session = getSession();
+    setUserSession(session);
     fetchBloodRequests();
   }, []);
 
   useEffect(() => {
     filterRequests();
-  }, [requests, selectedCity, searchQuery]);
+  }, [requests, selectedCity, searchQuery, selectedBloodGroup]);
 
   const fetchBloodRequests = async () => {
     try {
@@ -87,6 +96,16 @@ export default function DonateBloodPage() {
       );
     }
 
+    // Filter by blood group compatibility
+    if (selectedBloodGroup !== 'all' && isValidBloodGroup(selectedBloodGroup)) {
+      filtered = filtered.filter(req => {
+        if (isValidBloodGroup(req.bloodGroup)) {
+          return canDonateTo(selectedBloodGroup as BloodGroup, req.bloodGroup as BloodGroup);
+        }
+        return false;
+      });
+    }
+
     // Filter by search query (blood group, patient name, hospital)
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
@@ -94,6 +113,13 @@ export default function DonateBloodPage() {
         req.bloodGroup.toLowerCase().includes(query) ||
         req.patientName.toLowerCase().includes(query) ||
         req.hospitalName.toLowerCase().includes(query)
+      );
+    }
+
+    // Filter out user's own requests
+    if (userSession) {
+      filtered = filtered.filter(req => 
+        canUserDonate(req.email, req.contact)
       );
     }
 
@@ -130,6 +156,12 @@ export default function DonateBloodPage() {
   };
 
   const handleMessage = (request: BloodRequest) => {
+    // Check if user is trying to donate to their own request
+    if (!canUserDonate(request.email, request.contact)) {
+      alert('⚠️ You cannot donate to your own blood request!');
+      return;
+    }
+
     setSelectedRequest(request);
     setShowMessageModal(true);
     setMessageSent(false);
@@ -148,6 +180,15 @@ export default function DonateBloodPage() {
   };
 
   const handleSendMessage = async () => {
+    if (!selectedRequest) return;
+
+    // Final check to prevent self-donation
+    if (!canUserDonate(selectedRequest.email, selectedRequest.contact)) {
+      alert('⚠️ You cannot donate to your own blood request!');
+      closeModal();
+      return;
+    }
+
     // Validate form
     if (!donorName.trim()) {
       alert('Please enter your name');
@@ -161,6 +202,19 @@ export default function DonateBloodPage() {
       alert('Please select your blood group');
       return;
     }
+
+    // Check blood compatibility
+    if (isValidBloodGroup(donorBloodGroup) && isValidBloodGroup(selectedRequest.bloodGroup)) {
+      if (!canDonateTo(donorBloodGroup as BloodGroup, selectedRequest.bloodGroup as BloodGroup)) {
+        const confirmDonate = confirm(
+          `⚠️ Blood Compatibility Warning!\n\n` +
+          `Your blood group ${donorBloodGroup} may not be compatible with ${selectedRequest.bloodGroup}.\n\n` +
+          `Are you sure you want to proceed?`
+        );
+        if (!confirmDonate) return;
+      }
+    }
+
     if (!messageText.trim()) {
       alert('Please enter a message');
       return;
@@ -173,7 +227,6 @@ export default function DonateBloodPage() {
     setIsSending(true);
 
     try {
-      // Send message to API
       const response = await fetch('/api/donor-messages', {
         method: 'POST',
         headers: {
@@ -193,7 +246,8 @@ export default function DonateBloodPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send message');
       }
 
       const result = await response.json();
@@ -201,14 +255,13 @@ export default function DonateBloodPage() {
 
       setMessageSent(true);
       
-      // Close modal after 2 seconds
       setTimeout(() => {
         closeModal();
       }, 2000);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending message:', error);
-      alert('Failed to send message. Please try again.');
+      alert(`Failed to send message: ${error.message}`);
     } finally {
       setIsSending(false);
     }
@@ -258,6 +311,23 @@ export default function DonateBloodPage() {
               />
             </div>
 
+            {/* Blood Group Filter */}
+            <div className={styles.cityFilter}>
+              <Droplet className={styles.filterIcon} size={20} />
+              <select
+                value={selectedBloodGroup}
+                onChange={(e) => setSelectedBloodGroup(e.target.value)}
+                className={styles.citySelect}
+              >
+                <option value="all">My Blood Group</option>
+                {bloodGroups.map(group => (
+                  <option key={group} value={group}>
+                    {group}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* City Filter */}
             <div className={styles.cityFilter}>
               <Filter className={styles.filterIcon} size={20} />
@@ -280,6 +350,7 @@ export default function DonateBloodPage() {
           <div className={styles.resultsInfo}>
             <p className={styles.resultsCount}>
               Showing <strong>{filteredRequests.length}</strong> active request{filteredRequests.length !== 1 ? 's' : ''}
+              {selectedBloodGroup !== 'all' && ` compatible with ${selectedBloodGroup}`}
             </p>
           </div>
         </section>
