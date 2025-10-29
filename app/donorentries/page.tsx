@@ -161,6 +161,24 @@ export default function DonorEntries() {
         <div className={styles.bloodDrop}></div>
         <div className={styles.bloodDrop}></div>
         <div className={styles.bloodDrop}></div>
+        <div className={styles.bloodDrop}></div>
+        <div className={styles.bloodDrop}></div>
+        <div className={styles.bloodDrop}></div>
+        
+        {/* Shooting stars */}
+        <div className={styles.shootingStar} style={{top: '10%', left: '20%', animationDelay: '0s'}}></div>
+        <div className={styles.shootingStar} style={{top: '30%', left: '60%', animationDelay: '3s'}}></div>
+        <div className={styles.shootingStar} style={{top: '50%', left: '10%', animationDelay: '6s'}}></div>
+        <div className={styles.shootingStar} style={{top: '70%', left: '80%', animationDelay: '2s'}}></div>
+        <div className={styles.shootingStar} style={{top: '20%', left: '90%', animationDelay: '5s'}}></div>
+        
+        {/* Floating particles */}
+        <div className={styles.floatingParticle} style={{left: '15%', animationDelay: '0s', animationDuration: '15s'}}></div>
+        <div className={styles.floatingParticle} style={{left: '35%', animationDelay: '3s', animationDuration: '18s'}}></div>
+        <div className={styles.floatingParticle} style={{left: '55%', animationDelay: '6s', animationDuration: '20s'}}></div>
+        <div className={styles.floatingParticle} style={{left: '75%', animationDelay: '9s', animationDuration: '16s'}}></div>
+        <div className={styles.floatingParticle} style={{left: '25%', animationDelay: '12s', animationDuration: '22s'}}></div>
+        <div className={styles.floatingParticle} style={{left: '85%', animationDelay: '4s', animationDuration: '17s'}}></div>
       </div>
 
       <div className={styles.container}>

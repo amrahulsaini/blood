@@ -1,104 +1,60 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-
-const DATA_FILE_PATH = path.join(process.cwd(), 'donor-entries.json');
-
-interface DonorEntry {
-  fullName: string;
-  batch: string;
-  age: string;
-  bloodGroup: string;
-  donorType: string;
-  address: string;
-  email: string;
-  mobile: string;
-  timestamp: string;
-}
+import { query } from '@/lib/db';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 export async function POST(request: NextRequest) {
   try {
-    const body: DonorEntry = await request.json();
+    const body = await request.json();
 
-    // Validate required fields
     const requiredFields = ['fullName', 'batch', 'age', 'bloodGroup', 'donorType', 'address', 'email', 'mobile'];
     for (const field of requiredFields) {
-      if (!body[field as keyof DonorEntry]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        );
+      if (!body[field]) {
+        return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 });
       }
     }
 
-    // Read existing data or create new array
-    let entries: DonorEntry[] = [];
-    try {
-      const fileContent = await fs.readFile(DATA_FILE_PATH, 'utf-8');
-      entries = JSON.parse(fileContent);
-    } catch (error) {
-      // File doesn't exist yet, start with empty array
-      entries = [];
-    }
-
-    // Normalize for comparison
     const normalizedEmail = body.email.trim().toLowerCase();
     const normalizedMobile = body.mobile.trim();
 
-    // Uniqueness checks for email and mobile
-    const existingByEmail = entries.find(
-      (e) => e.email.trim().toLowerCase() === normalizedEmail
-    );
-    const existingByMobile = entries.find(
-      (e) => e.mobile.trim() === normalizedMobile
+    const existing = await query<RowDataPacket[]>(
+      'SELECT email, phone FROM donor_entries WHERE email = ? OR phone = ?',
+      [normalizedEmail, normalizedMobile]
     );
 
-    if (existingByEmail || existingByMobile) {
+    if (existing.length > 0) {
       const conflicts: string[] = [];
-      if (existingByEmail) conflicts.push('email');
-      if (existingByMobile) conflicts.push('mobile');
-      return NextResponse.json(
-        {
-          error: `Already registered with this ${conflicts.join(' and ')}.`,
-          fields: conflicts,
-        },
-        { status: 409 }
-      );
+      if (existing.some((e) => e.email === normalizedEmail)) conflicts.push('email');
+      if (existing.some((e) => e.phone === normalizedMobile)) conflicts.push('mobile');
+      return NextResponse.json({ error: `Already registered with this ${conflicts.join(' and ')}.`, fields: conflicts }, { status: 409 });
     }
 
-    // Add new entry
-    entries.push(body);
-
-    // Write back to file
-    await fs.writeFile(DATA_FILE_PATH, JSON.stringify(entries, null, 2), 'utf-8');
-
-    return NextResponse.json(
-      { message: 'Donor entry saved successfully', data: body },
-      { status: 200 }
+    const result = await query<ResultSetHeader>(
+      `INSERT INTO donor_entries (full_name, email, phone, blood_group, age, gender, address, city, state, pincode, is_available, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [body.fullName, normalizedEmail, normalizedMobile, body.bloodGroup, parseInt(body.age), 'Male', body.address, 'Delhi', 'Delhi', '000000', true, 'approved']
     );
+
+    return NextResponse.json({ message: 'Donor entry saved successfully', data: { id: result.insertId, ...body, timestamp: new Date().toISOString() } }, { status: 200 });
   } catch (error) {
     console.error('Error saving donor entry:', error);
-    return NextResponse.json(
-      { error: 'Failed to save donor entry' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to save donor entry' }, { status: 500 });
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const fileContent = await fs.readFile(DATA_FILE_PATH, 'utf-8');
-    const entries = JSON.parse(fileContent);
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type');
     
-    return NextResponse.json(
-      { entries, count: entries.length },
-      { status: 200 }
-    );
+    if (type === 'blood-requests') {
+      const requests = await query<RowDataPacket[]>('SELECT id, patient_name as patientName, requester_email as email, requester_phone as contact, blood_group as bloodGroup, hospital_name as hospitalName, city as locality, urgency as emergencyState, status, created_at as submittedAt FROM blood_requests ORDER BY created_at DESC');
+      return NextResponse.json(requests, { status: 200 });
+    }
+    
+    const entries = await query<RowDataPacket[]>('SELECT id, full_name as fullName, email, phone as mobile, blood_group as bloodGroup, age, address, city as batch, status, created_at as timestamp FROM donor_entries WHERE status = "approved" ORDER BY created_at DESC');
+    return NextResponse.json(entries, { status: 200 });
   } catch (error) {
-    // If file doesn't exist, return empty array
-    return NextResponse.json(
-      { entries: [], count: 0 },
-      { status: 200 }
-    );
+    console.error('Error fetching entries:', error);
+    return NextResponse.json({ error: 'Failed to fetch entries' }, { status: 500 });
   }
 }

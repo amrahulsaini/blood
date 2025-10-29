@@ -1,0 +1,72 @@
+.autocompleteContainer {
+  position: relative;
+  width: 100%;
+}
+
+.errorContainer {
+  position: relative;
+  width: 100%;
+}
+
+.loadingText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #87CEEB;
+  font-style: italic;
+}
+
+.errorText {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #FFA500;
+  font-style: italic;
+}
+
+/* Override Google Maps autocomplete dropdown styles */
+:global(.pac-container) {
+  border-radius: 8px;
+  border: 2px solid #DC143C;
+  margin-top: 4px;
+  box-shadow: 0 4px 16px rgba(220, 20, 60, 0.2);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+:global(.pac-item) {
+  padding: 12px;
+  cursor: pointer;
+  border-top: 1px solid #FFE4E1;
+  transition: background-color 0.2s ease;
+}
+
+:global(.pac-item:hover) {
+  background-color: #FFF8DC;
+}
+
+:global(.pac-item-selected) {
+  background-color: #FAEBD7;
+}
+
+:global(.pac-icon) {
+  background-image: none;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+:global(.pac-icon::before) {
+  content: "🏥";
+  font-size: 18px;
+}
+
+:global(.pac-item-query) {
+  font-size: 14px;
+  font-weight: 600;
+  color: #8B0000;
+}
+
+:global(.pac-matched) {
+  font-weight: 700;
+  color: #DC143C;
+}

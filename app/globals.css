@@ -67,8 +67,7 @@ body {
   text-align: center;
   position: relative;
   z-index: 1;
-  border: 3px solid;
-  border-image: linear-gradient(135deg, #a855f7, #ec4899, #f97316) 1;
+  border: 3px solid #d8b4fe;
 }
 
 .coming-soon-header {
@@ -123,8 +122,7 @@ body {
   padding: 2rem;
   background: linear-gradient(135deg, #faf5ff 0%, #fae8ff 50%, #fce7f3 100%);
   border-radius: 20px;
-  border: 2px solid;
-  border-image: linear-gradient(135deg, #d8b4fe, #f9a8d4) 1;
+  border: 2px solid #d8b4fe;
   position: relative;
   overflow: hidden;
 }
@@ -172,15 +170,11 @@ body {
   gap: 0.75rem;
   font-size: 1.3rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #7c3aed, #a855f7);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-color: white;
+  color: #7c3aed;
+  background: white;
   padding: 0.75rem 1.5rem;
   border-radius: 50px;
-  border: 2px solid;
-  border-image: linear-gradient(135deg, #a855f7, #ec4899) 1;
+  border: 2px solid #c084fc;
   box-shadow: 0 8px 20px rgba(168, 85, 247, 0.25);
   position: relative;
 }
@@ -255,11 +249,9 @@ body {
 }
 
 .donor-certs {
-  background: white;
   background: linear-gradient(135deg, #faf5ff, #fae8ff);
   color: #7c3aed;
-  border: 3px solid;
-  border-image: linear-gradient(135deg, #a855f7, #ec4899) 1;
+  border: 3px solid #d8b4fe;
 }
 
 .donor-certs:hover {
@@ -271,12 +263,8 @@ body {
 .coming-soon-footer {
   margin-top: 2.5rem;
   padding-top: 2rem;
-  border-top: 3px solid;
-  border-image: linear-gradient(90deg, transparent, #d8b4fe, transparent) 1;
-  background: linear-gradient(135deg, #7c3aed, #ec4899);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  border-top: 3px solid #d8b4fe;
+  color: #7c3aed;
 }
 
 .coming-soon-footer p {
