@@ -1214,13 +1214,38 @@
 }
 
 @media (max-width: 768px) {
-  /* Show mobile menu button, hide desktop buttons */
-  .mobileMenuButton {
-    display: block;
+  /* Mobile header layout */
+  .headerContent {
+    padding: 0;
   }
 
-  .profileBtn,
-  .partnerBtn {
+  .logoSection {
+    flex: 1;
+    gap: 0.75rem;
+  }
+
+  .logo {
+    width: 45px;
+    height: 45px;
+    padding: 5px;
+  }
+
+  .brandText {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+
+  .brandHighlight {
+    font-size: 1.3rem;
+  }
+
+  /* Show mobile menu button on right, hide desktop buttons and notification */
+  .mobileMenuButton {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .headerButtons {
     display: none;
   }
 

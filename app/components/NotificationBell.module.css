@@ -264,6 +264,12 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .bellButton {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+  }
+
   .dropdown {
     position: fixed;
     top: auto;
