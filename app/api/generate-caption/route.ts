@@ -41,15 +41,14 @@ MANDATORY THANKS SECTION (EXACT ORDER):
 At the end of the post, include these thanks in this EXACT ORDER with line breaks:
 
 I'm deeply grateful to:
-- Our Honorable Director Sir, for his visionary leadership
-- Arpit Sir, for his constant guidance and support
+- Our Honorable Director Sir Arpit Agrawal, for his visionary leadership and constant guidance
 - Shruti Mam, for inspiring me to be part of this life-saving initiative
 - Jatin Sir, for motivating me to make a difference
 
 STRUCTURE:
 1. Opening: Personal excitement and commitment (2-3 lines)
 2. Middle: Impact and community (3-4 lines)  
-3. Gratitude section: Thanks to leaders (4-5 lines as shown above)
+3. Gratitude section: Thanks to leaders (3-4 lines as shown above)
 4. Closing: Call to action or inspiring message (1-2 lines)
 
 FORMATTING:

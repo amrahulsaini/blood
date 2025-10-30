@@ -72,6 +72,14 @@ export default function DonorCertificatesPage() {
     } catch {}
   }, []);
 
+  // Auto-generate caption when name is available
+  useEffect(() => {
+    if (name && !isLoading && !caption) {
+      // Automatically generate caption when page loads with name
+      handleGenerateCaption();
+    }
+  }, [name, isLoading]); // Only run when name changes and not loading
+
   // Handle redirect in separate effect
   useEffect(() => {
     if (shouldRedirect) {
