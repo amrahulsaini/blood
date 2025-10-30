@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get('type');
     
     if (type === 'blood-requests') {
-      const requests = await query<RowDataPacket[]>('SELECT id, patient_name as patientName, requester_email as email, requester_phone as contact, blood_group as bloodGroup, hospital_name as hospitalName, city as locality, urgency as emergencyState, status, created_at as submittedAt FROM blood_requests ORDER BY created_at DESC');
+      const requests = await query<RowDataPacket[]>('SELECT id, patient_name as patientName, requester_email as email, requester_phone as contact, blood_group as bloodGroup, age, hospital_name as hospitalName, city as locality, urgency as emergencyState, status, created_at as submittedAt FROM blood_requests ORDER BY created_at DESC');
       return NextResponse.json(requests, { status: 200 });
     }
     
