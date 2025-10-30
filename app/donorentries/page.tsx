@@ -88,6 +88,25 @@ export default function DonorEntries() {
     setSubmitMessage('');
 
     try {
+      // First, verify email against CSV
+      const verifyResponse = await fetch('/api/verify-donor-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const verifyData = await verifyResponse.json();
+
+      if (!verifyData.authorized) {
+        setErrorDialogText(verifyData.message || 'You are not authorized to generate a certificate. Your email is not in the authorized donor list.');
+        setShowErrorDialog(true);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // If authorized, proceed with registration
       const nameForDialog = formData.fullName;
       const response = await fetch('/api/donor-entries', {
         method: 'POST',
