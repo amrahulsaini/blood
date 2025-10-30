@@ -209,60 +209,47 @@ export default function Home() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           {/* Brand Section */}
-          <div className={styles.footerBrand}>
-            <Image 
-              src="/assh logo.webp" 
-              alt="Aashayein Logo" 
-              width={50} 
-              height={50}
-              className={styles.footerLogo}
-            />
-            <div className={styles.footerBrandInfo}>
+          <div className={styles.footerSection}>
+            <div className={styles.footerBrand}>
+              <Image 
+                src="/assh logo.webp" 
+                alt="Aashayein Logo" 
+                width={40} 
+                height={40}
+                className={styles.footerLogo}
+              />
               <div className={styles.footerBrandName}>TheLifeSaviours</div>
-              <div className={styles.footerTagline}>Aashayein - Hope for Life</div>
-              <div className={styles.footerDescription}>
-                Join thousands of heroes saving lives through blood donation. Every drop counts.
-              </div>
             </div>
+            <p className={styles.footerTagline}>by Aashayein</p>
+            <p className={styles.footerDescription}>
+              Saving lives through blood donation
+            </p>
           </div>
 
           {/* Quick Links */}
           <div className={styles.footerSection}>
             <h4 className={styles.footerSectionTitle}>Quick Links</h4>
             <div className={styles.footerLinks}>
-              <Link href="/about">About Us</Link>
               <Link href="/donorentries">Become a Donor</Link>
               <Link href="/request-blood">Request Blood</Link>
               <Link href="/donate-blood">Find Donors</Link>
             </div>
           </div>
 
-          {/* Legal */}
+          {/* Contact */}
           <div className={styles.footerSection}>
-            <h4 className={styles.footerSectionTitle}>Legal</h4>
+            <h4 className={styles.footerSectionTitle}>Contact</h4>
             <div className={styles.footerLinks}>
-              <Link href="/privacy">Privacy Policy</Link>
-              <Link href="/terms">Terms of Service</Link>
-              <Link href="/contact">Contact Us</Link>
-              <Link href="/faq">FAQ</Link>
-            </div>
-          </div>
-
-          {/* Social & Contact */}
-          <div className={styles.footerSection}>
-            <h4 className={styles.footerSectionTitle}>Connect With Us</h4>
-            <div className={styles.footerSocial}>
-              <p className={styles.footerHashtags}>#BloodDonation #SaveLives #Aashayein</p>
-              <p className={styles.footerEmail}>info@thelifesaviours.org</p>
-              <p className={styles.footerPhone}>+91 XXXXX XXXXX</p>
+              <a href="mailto:info@thelifesaviours.org">Email Us</a>
+              <a href="/contact">Get in Touch</a>
+              <a href="/faq">Help & FAQ</a>
             </div>
           </div>
         </div>
 
-        {/* Copyright Bar */}
+        {/* Copyright */}
         <div className={styles.footerBottom}>
-          <p className={styles.copyright}>© 2025 TheLifeSaviours by Aashayein. All rights reserved.</p>
-          <p className={styles.madeWith}>Made with ❤️ for saving lives</p>
+          <p>© 2025 TheLifeSaviours by Aashayein. All rights reserved.</p>
         </div>
       </footer>
     </div>
