@@ -380,7 +380,10 @@ export default function DonateBloodPage() {
                   <div className={styles.patientInfo}>
                     <h3 className={styles.patientName}>{request.patientName}</h3>
                     <p className={styles.patientAge}>
-                      Age: {request.age ? `${request.age} years` : 'Not specified'}
+                      Age: {request.age || 'Not specified'} {request.age && 'years'} 
+                      <span style={{fontSize: '10px', color: '#999', marginLeft: '5px'}}>
+                        (DEBUG: {JSON.stringify(request.age)} | Type: {typeof request.age})
+                      </span>
                     </p>
                     <div className={styles.statusBadge}>
                       <span className={styles.statusDot}></span>
