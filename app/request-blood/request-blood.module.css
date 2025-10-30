@@ -430,10 +430,20 @@
 }
 
 /* Responsive Design */
+/* Tablets and Small Laptops */
+@media (max-width: 1024px) {
+  .container {
+    max-width: 90%;
+    padding: 2.5rem 2rem;
+  }
+}
+
+/* Tablets */
 @media (max-width: 768px) {
   .container {
     padding: 2rem 1.5rem;
     border-radius: 16px;
+    max-width: 95%;
   }
 
   .backButton {
@@ -457,36 +467,52 @@
   }
 
   .emergencyStates {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
   }
 
   .successDialog {
     margin: 1rem;
     padding: 2rem;
   }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .submitButton {
+    padding: 1rem 1.75rem;
+    font-size: 1.05rem;
+  }
 }
 
+/* Mobile Devices */
 @media (max-width: 480px) {
   .pageContainer {
-    padding: 1rem 0.5rem;
+    padding: 0.75rem 0.5rem;
   }
 
   .container {
     padding: 1.5rem 1rem;
+    border-radius: 12px;
   }
 
   .iconWrapper {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
   }
 
   .headerIcon {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 
   .title {
-    font-size: 1.75rem;
+    font-size: 1.65rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
   }
 
   .formGrid {
@@ -498,5 +524,74 @@
   .textarea {
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
+  }
+
+  .emergencyStates {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .stateButton {
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .submitButton {
+    padding: 0.95rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .successDialog {
+    padding: 1.5rem;
+  }
+
+  .successIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .backButton {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 375px) {
+  .container {
+    padding: 1.25rem 0.85rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .iconWrapper {
+    width: 60px;
+    height: 60px;
+  }
+
+  .headerIcon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    font-size: 0.9rem;
+  }
+
+  .label {
+    font-size: 0.85rem;
+  }
+
+  .stateButton {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.8rem;
   }
 }

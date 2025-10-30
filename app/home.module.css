@@ -975,10 +975,22 @@
   font-size: 0.9rem;
 }
 
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .reasonsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 968px) {
   .headerContent {
     flex-direction: column;
     gap: 1.5rem;
+    text-align: center;
   }
 
   .headerButtons {
@@ -1023,53 +1035,183 @@
   }
 }
 
-@media (max-width: 480px) {
-  .header {
-    padding: 1rem 1.5rem;
+@media (max-width: 768px) {
+  .section {
+    padding: 3rem 1.5rem;
   }
 
   .sectionTitle {
-    font-size: 2rem;
+    font-size: 2.2rem;
+  }
+
+  .sectionDescription {
+    font-size: 1.05rem;
   }
 
   .card {
-    padding: 2rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1.6rem;
+  }
+
+  .cardDescription {
+    font-size: 0.95rem;
   }
 
   .reasonCard {
-    padding: 1.5rem;
+    padding: 1.75rem;
+  }
+
+  .statsGrid {
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 1rem 1.25rem;
+  }
+
+  .brand {
+    font-size: 1.4rem;
+  }
+
+  .headerContent {
+    padding: 2rem 1rem;
+  }
+
+  .tagline {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .section {
+    padding: 2.5rem 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.85rem;
+  }
+
+  .sectionDescription {
+    font-size: 1rem;
+  }
+
+  .card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .reasonCard {
+    padding: 1.5rem 1.25rem;
   }
   
   .statsGrid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .statNumber {
     font-size: 2.5rem;
   }
 
+  .statLabel {
+    font-size: 0.9rem;
+  }
+
   .cardIcon {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
   }
   
   .cardTitle {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .cardDescription {
+    font-size: 0.9rem;
   }
 
   .reasonNumber {
-    font-size: 3.5rem;
+    font-size: 3rem;
+  }
+
+  .reasonTitle {
+    font-size: 1.2rem;
   }
 
   .stepNumber {
-    width: 60px;
-    height: 60px;
-    font-size: 1.75rem;
+    width: 55px;
+    height: 55px;
+    font-size: 1.6rem;
+  }
+
+  .stepTitle {
+    font-size: 1.15rem;
+  }
+
+  .stepDescription {
+    font-size: 0.9rem;
   }
 
   .profileBtn,
   .partnerBtn {
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
+  }
+
+  .ctaBtn,
+  .secondaryBtn {
+    padding: 0.9rem 1.75rem;
+    font-size: 0.95rem;
+  }
+
+  .footer {
+    padding: 2.5rem 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .brand {
+    font-size: 1.25rem;
+  }
+
+  .tagline {
+    font-size: 2.2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.7rem;
+  }
+
+  .card {
+    padding: 1.5rem 1rem;
+  }
+
+  .cardIcon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .cardTitle {
+    font-size: 1.25rem;
+  }
+
+  .reasonNumber {
+    font-size: 2.75rem;
+  }
+
+  .statNumber {
+    font-size: 2.25rem;
+  }
+
+  .profileBtn,
+  .partnerBtn {
+    padding: 0.7rem 1.25rem;
+    font-size: 0.85rem;
   }
 }

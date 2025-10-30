@@ -659,18 +659,55 @@
   gap: 0.25rem;
 }
 
+@media (max-width: 1024px) {
+  .container {
+    max-width: 95%;
+  }
+
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
+  .container {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .profileHeader {
+    padding: 2rem 1.5rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .infoGrid {
+    gap: 1rem;
+  }
+
+  .infoCard {
+    padding: 1.25rem;
+  }
+
   .messagesSection {
     padding: 1.5rem;
   }
 
   .messagesHeader {
     flex-wrap: wrap;
+    gap: 1rem;
   }
 
   .messageHeader {
     flex-direction: column;
     gap: 0.5rem;
+    align-items: flex-start;
   }
 
   .donorInfo {
@@ -682,5 +719,118 @@
   .messageFooter {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .contactButton {
+    width: 100%;
+  }
+
+  .verifyingContainer {
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageContainer {
+    padding: 0.5rem;
+  }
+
+  .container {
+    padding: 1.5rem 1rem;
+    margin: 0.5rem;
+    border-radius: 16px;
+  }
+
+  .profileHeader {
+    padding: 1.5rem 1rem;
+  }
+
+  .title {
+    font-size: 1.65rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .bloodGroupBadge {
+    width: 70px;
+    height: 70px;
+    font-size: 1.3rem;
+  }
+
+  .infoCard {
+    padding: 1rem;
+  }
+
+  .infoValue {
+    font-size: 1rem;
+  }
+
+  .infoLabel {
+    font-size: 0.8rem;
+  }
+
+  .messagesSection {
+    padding: 1.25rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.3rem;
+  }
+
+  .messageCard {
+    padding: 1.25rem;
+  }
+
+  .donorName {
+    font-size: 1.05rem;
+  }
+
+  .messageText {
+    font-size: 0.95rem;
+  }
+
+  .contactButton {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .verifyingContainer {
+    padding: 1.5rem 1rem;
+  }
+
+  .verifyingIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .verifyingTitle {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 375px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .bloodGroupBadge {
+    width: 60px;
+    height: 60px;
+    font-size: 1.15rem;
+  }
+
+  .infoValue {
+    font-size: 0.95rem;
+  }
+
+  .messageCard {
+    padding: 1rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.2rem;
   }
 }

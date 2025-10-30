@@ -418,15 +418,45 @@
 @media (max-width: 768px) {
   .container {
     padding: 2rem 1.5rem;
+    max-width: 95%;
   }
   
   .title {
     font-size: 2rem;
   }
+
+  .subtitle {
+    font-size: 1.05rem;
+  }
   
   .formGrid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .heartIcon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    font-size: 0.95rem;
+  }
+
+  .submitButton {
+    padding: 1rem 1.75rem;
+    font-size: 1.05rem;
+  }
+
+  .modalBox {
+    padding: 2.5rem;
+    width: 92%;
   }
 }
 
@@ -562,15 +592,108 @@
 }
 
 @media (max-width: 480px) {
+  .pageContainer {
+    padding: 0.75rem 0.5rem;
+  }
+
   .container {
     padding: 1.5rem 1rem;
+    border-radius: 16px;
   }
   
   .title {
-    font-size: 1.75rem;
+    font-size: 1.65rem;
+  }
+
+  .subtitle {
+    font-size: 0.95rem;
+  }
+
+  .heartIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .formGrid {
+    gap: 1.25rem;
+  }
+
+  .label {
+    font-size: 0.85rem;
+  }
+
+  .labelIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .submitButton {
+    padding: 0.95rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .modalBox {
+    padding: 2rem;
+  }
+
+  .modalIcon {
+    width: 65px;
+    height: 65px;
+  }
+
+  .modalTitle {
+    font-size: 1.5rem;
+  }
+
+  .modalMessage {
+    font-size: 1rem;
   }
   
   .optionsList {
     max-height: 200px;
+  }
+}
+
+@media (max-width: 375px) {
+  .container {
+    padding: 1.25rem 0.85rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+
+  .heartIcon {
+    width: 55px;
+    height: 55px;
+  }
+
+  .label {
+    font-size: 0.8rem;
+  }
+
+  .input,
+  .select,
+  .textarea {
+    font-size: 0.85rem;
+  }
+
+  .modalTitle {
+    font-size: 1.35rem;
+  }
+
+  .modalMessage {
+    font-size: 0.95rem;
   }
 }

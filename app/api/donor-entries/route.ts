@@ -52,7 +52,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: 'Donor entry saved successfully', data: { id: result.insertId, ...body, timestamp: new Date().toISOString() } }, { status: 200 });
   } catch (error) {
     console.error('Error saving donor entry:', error);
-    return NextResponse.json({ error: 'Failed to save donor entry' }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : 'Failed to save donor entry';
+    return NextResponse.json({ error: 'Failed to save donor entry', details: errorMessage }, { status: 500 });
   }
 }
 
