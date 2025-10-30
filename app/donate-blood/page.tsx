@@ -203,15 +203,15 @@ export default function DonateBloodPage() {
       return;
     }
 
-    // Check blood compatibility
+    // Check blood compatibility - STRICT CHECK, MUST MATCH
     if (isValidBloodGroup(donorBloodGroup) && isValidBloodGroup(selectedRequest.bloodGroup)) {
       if (!canDonateTo(donorBloodGroup as BloodGroup, selectedRequest.bloodGroup as BloodGroup)) {
-        const confirmDonate = confirm(
-          `⚠️ Blood Compatibility Warning!\n\n` +
-          `Your blood group ${donorBloodGroup} may not be compatible with ${selectedRequest.bloodGroup}.\n\n` +
-          `Are you sure you want to proceed?`
+        alert(
+          `❌ Blood Group Incompatible!\n\n` +
+          `Sorry, your blood group ${donorBloodGroup} cannot donate to ${selectedRequest.bloodGroup}.\n\n` +
+          `Please select a blood request that matches your blood group compatibility.`
         );
-        if (!confirmDonate) return;
+        return;
       }
     }
 

@@ -157,7 +157,13 @@ export default function NotificationBell() {
 
   // Format timestamp
   const formatTime = (timestamp: string) => {
+    if (!timestamp) return '';
+    
     const date = new Date(timestamp);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) return '';
+    
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const minutes = Math.floor(diff / 60000);

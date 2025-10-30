@@ -55,18 +55,19 @@ export async function POST(request: NextRequest) {
       status: 'pending',
     };
 
-    // Create notification for new blood request
+    // Create notification for new blood request (personalized for the requester)
     try {
       await query(
-        `INSERT INTO notifications (title, message, type, related_id, related_type, priority, created_at) 
-         VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+        `INSERT INTO notifications (title, message, type, related_id, related_type, priority, user_email, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
         [
-          `New Blood Request - ${newRequest.bloodGroup}`,
-          `${newRequest.patientName} needs ${newRequest.bloodGroup} blood at ${newRequest.hospitalName}, ${newRequest.locality}. Urgency: ${newRequest.emergencyState}`,
+          `Your Blood Request - ${newRequest.bloodGroup}`,
+          `You requested ${newRequest.bloodGroup} blood at ${newRequest.hospitalName}, ${newRequest.locality}. We're finding donors for you. Status: ${newRequest.emergencyState}`,
           'urgent',
           String(newRequest.id),
           'blood_request',
-          urgency
+          urgency,
+          newRequest.email
         ]
       );
       console.log(`Notification created for blood request #${newRequest.id}`);

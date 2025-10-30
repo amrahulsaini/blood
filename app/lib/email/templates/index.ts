@@ -6,3 +6,4 @@ export { requestFulfilledEmail } from './requestFulfilled';
 export { urgentReminderEmail } from './urgentReminder';
 export { welcomeEmail } from './welcomeEmail';
 export { requestCreatedEmail } from './requestCreatedEmail';
+export { donorContactedYouEmail } from './donorContactedYou';

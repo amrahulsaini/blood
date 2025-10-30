@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import { sendEmail } from '@/app/lib/email/mailer';
-import { donorMatchedEmail } from '@/app/lib/email/templates';
+import { donorContactedYouEmail } from '@/app/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -52,27 +52,28 @@ export async function POST(request: NextRequest) {
       console.error('Error creating notification:', notifError);
     }
 
-    // Send email to requester
+    // Send email to requester (not donor!)
     try {
-      const emailHtml = donorMatchedEmail({
-        patientName: bloodRequest.patient_name,
+      const emailHtml = donorContactedYouEmail({
+        requesterName: body.requesterName,
         donorName: body.donorName,
-        bloodGroup: body.donorBloodGroup,
+        donorPhone: body.donorMobile,
+        donorBloodGroup: body.donorBloodGroup,
+        bloodGroupNeeded: bloodRequest.blood_group,
         hospitalName: bloodRequest.hospital_name,
         locality: bloodRequest.city,
-        emergencyState: 'normal',
-        emergencyContact: body.donorMobile,
-        patientContact: body.requesterMobile,
-        requestId: body.requestId,
+        donorMessage: body.message,
+        willingToDonate: body.consent,
       });
 
       await sendEmail({
         to: body.requesterEmail,
-        subject: `Donor Found! ${body.donorBloodGroup} Blood Available`,
+        subject: `✅ Donor ${body.donorName} Has Contacted You! - ${body.donorBloodGroup} Blood Available`,
         html: emailHtml,
       });
+      console.log(`Donor contact email sent to requester: ${body.requesterEmail}`);
     } catch (emailError) {
-      console.error('Failed to send donor matched email:', emailError);
+      console.error('Failed to send donor contact email:', emailError);
     }
 
     const newMessage = {
