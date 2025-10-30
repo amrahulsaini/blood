@@ -55,6 +55,25 @@ export async function POST(request: NextRequest) {
       status: 'pending',
     };
 
+    // Create notification for new blood request
+    try {
+      await query(
+        `INSERT INTO notifications (title, message, type, related_id, related_type, priority, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+        [
+          `New Blood Request - ${newRequest.bloodGroup}`,
+          `${newRequest.patientName} needs ${newRequest.bloodGroup} blood at ${newRequest.hospitalName}, ${newRequest.locality}. Urgency: ${newRequest.emergencyState}`,
+          'urgent',
+          String(newRequest.id),
+          'blood_request',
+          urgency
+        ]
+      );
+      console.log(`Notification created for blood request #${newRequest.id}`);
+    } catch (notifError) {
+      console.error('Error creating notification for blood request:', notifError);
+    }
+
     // Send confirmation email
     try {
       const emailHtml = requestCreatedEmail({

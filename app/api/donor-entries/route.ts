@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { sendEmail } from '@/app/lib/email/mailer';
+import { donorRegistrationEmail } from '@/app/lib/email/templates';
 
 export async function POST(request: NextRequest) {
   try {
@@ -49,7 +51,61 @@ export async function POST(request: NextRequest) {
       ]
     );
 
-    return NextResponse.json({ message: 'Donor entry saved successfully', data: { id: result.insertId, ...body, timestamp: new Date().toISOString() } }, { status: 200 });
+    const newDonor = {
+      id: result.insertId,
+      fullName: body.fullName,
+      email: normalizedEmail,
+      mobile: normalizedMobile,
+      bloodGroup: body.bloodGroup,
+      donorType: body.donorType,
+      batch: body.batch,
+      age: body.age,
+      address: body.address,
+      timestamp: new Date().toISOString()
+    };
+
+    // Create notification for new donor registration
+    try {
+      await query(
+        `INSERT INTO notifications (title, message, type, related_id, related_type, priority, created_at) 
+         VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+        [
+          `New Donor Registration - ${newDonor.bloodGroup}`,
+          `${newDonor.fullName} registered as a ${newDonor.donorType} donor with ${newDonor.bloodGroup} blood group. Contact: ${newDonor.mobile}`,
+          'success',
+          String(newDonor.id),
+          'donor_registration',
+          'normal'
+        ]
+      );
+      console.log(`Notification created for donor registration #${newDonor.id}`);
+    } catch (notifError) {
+      console.error('Error creating notification for donor:', notifError);
+    }
+
+    // Send welcome email to donor
+    try {
+      const emailHtml = donorRegistrationEmail({
+        name: newDonor.fullName,
+        donorId: String(newDonor.id),
+        bloodGroup: newDonor.bloodGroup,
+        phoneNumber: newDonor.mobile,
+        locality: newDonor.address,
+        pincode: '000000',
+      });
+
+      await sendEmail({
+        to: newDonor.email,
+        subject: `🩸 Welcome to TheLifeSaviours - ${newDonor.bloodGroup} Donor Registration Confirmed`,
+        html: emailHtml,
+      });
+
+      console.log(`Welcome email sent to ${newDonor.email}`);
+    } catch (emailError) {
+      console.error('Failed to send donor welcome email:', emailError);
+    }
+
+    return NextResponse.json({ message: 'Donor entry saved successfully', data: newDonor }, { status: 200 });
   } catch (error) {
     console.error('Error saving donor entry:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to save donor entry';
