@@ -178,29 +178,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Donate Section */}
+      {/* Why Donate Section - Our Leaders */}
       <section className={styles.whyDonateSection}>
-        <h2 className={styles.sectionTitle}>Why Donate Blood?</h2>
-        <div className={styles.reasonsGrid}>
-          <div className={styles.reasonCard}>
-            <div className={styles.reasonNumber}>01</div>
-            <h3>Save Lives</h3>
-            <p>One donation can save up to three lives. Be someone's hero today.</p>
+        <h2 className={styles.sectionTitle}>Our Leadership</h2>
+        <p className={styles.sectionDescription}>Meet the visionaries behind our mission</p>
+        <div className={styles.leadershipGrid}>
+          <div className={styles.leaderCard}>
+            <div className={styles.leaderImageWrapper}>
+              <Image 
+                src="https://d1h684srpghjti.cloudfront.net/assets/images/gallary_photos/t1661332149_KGzWxKGR3a.jpg?w=320&format=webp"
+                alt="Arpit Agrawal - Chairman"
+                width={200}
+                height={200}
+                className={styles.leaderImage}
+              />
+            </div>
+            <div className={styles.leaderInfo}>
+              <h3 className={styles.leaderTitle}>Chairman</h3>
+              <h4 className={styles.leaderName}>Arpit Agrawal</h4>
+              <p className={styles.leaderRole}>Director JECRC Foundation</p>
+            </div>
           </div>
-          <div className={styles.reasonCard}>
-            <div className={styles.reasonNumber}>02</div>
-            <h3>Health Benefits</h3>
-            <p>Regular donation helps reduce heart disease risk and maintains iron levels.</p>
-          </div>
-          <div className={styles.reasonCard}>
-            <div className={styles.reasonNumber}>03</div>
-            <h3>Free Health Check</h3>
-            <p>Get a mini health screening every time you donate blood.</p>
-          </div>
-          <div className={styles.reasonCard}>
-            <div className={styles.reasonNumber}>04</div>
-            <h3>Community Impact</h3>
-            <p>Help build a healthier, more caring community for everyone.</p>
+          <div className={styles.leaderCard}>
+            <div className={styles.leaderImageWrapper}>
+              <Image 
+                src="https://d1h684srpghjti.cloudfront.net/assets/images/gallary_photos/t1661332038_YEGFfaygAW.jpg?w=320&format=webp"
+                alt="Dr. Vinay Kumar Chandna - Vice-Chairman"
+                width={200}
+                height={200}
+                className={styles.leaderImage}
+              />
+            </div>
+            <div className={styles.leaderInfo}>
+              <h3 className={styles.leaderTitle}>Vice-Chairman</h3>
+              <h4 className={styles.leaderName}>Dr. Vinay Kumar Chandna</h4>
+              <p className={styles.leaderRole}>Principal JECRC Foundation</p>
+            </div>
           </div>
         </div>
       </section>

@@ -944,6 +944,97 @@
   color: rgba(0, 0, 0, 0.8);
 }
 
+/* Leadership Section */
+.leadershipGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4rem;
+  max-width: 1000px;
+  margin: 3rem auto 0;
+  padding: 0 2rem;
+}
+
+.leaderCard {
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 2rem 2.5rem;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.leaderCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 150px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  z-index: 0;
+}
+
+.leaderCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 60px rgba(220, 20, 60, 0.15);
+}
+
+.leaderImageWrapper {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto 2rem;
+  width: 200px;
+  height: 200px;
+}
+
+.leaderImage {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+}
+
+.leaderCard:hover .leaderImage {
+  transform: scale(1.05);
+  border-color: #DC143C;
+  box-shadow: 0 12px 40px rgba(220, 20, 60, 0.3);
+}
+
+.leaderInfo {
+  position: relative;
+  z-index: 1;
+}
+
+.leaderTitle {
+  color: #000000;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  font-family: 'Sora', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.leaderName {
+  color: #DC143C;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  font-family: 'Sora', sans-serif;
+}
+
+.leaderRole {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+
 .footer {
   background: #f8f8f8;
   border-top: 2px solid rgba(0, 0, 0, 0.06);
@@ -1062,6 +1153,10 @@
   .reasonsGrid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .leadershipGrid {
+    gap: 3rem;
+  }
 }
 
 @media (max-width: 968px) {
@@ -1096,6 +1191,11 @@
 
   .reasonsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .leadershipGrid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
   
   .footerContent {
