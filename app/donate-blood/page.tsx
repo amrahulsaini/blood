@@ -311,23 +311,6 @@ export default function DonateBloodPage() {
               />
             </div>
 
-            {/* Blood Group Filter */}
-            <div className={styles.cityFilter}>
-              <Droplet className={styles.filterIcon} size={20} />
-              <select
-                value={selectedBloodGroup}
-                onChange={(e) => setSelectedBloodGroup(e.target.value)}
-                className={styles.citySelect}
-              >
-                <option value="all">My Blood Group</option>
-                {bloodGroups.map(group => (
-                  <option key={group} value={group}>
-                    {group}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* City Filter */}
             <div className={styles.cityFilter}>
               <Filter className={styles.filterIcon} size={20} />
@@ -541,6 +524,29 @@ export default function DonateBloodPage() {
                         <option value="O+">O+</option>
                         <option value="O-">O-</option>
                       </select>
+                      {donorBloodGroup && selectedRequest && (
+                        <div style={{
+                          marginTop: '8px',
+                          padding: '8px 12px',
+                          borderRadius: '6px',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          backgroundColor: canDonateTo(donorBloodGroup as BloodGroup, selectedRequest.bloodGroup as BloodGroup) 
+                            ? '#d4edda' 
+                            : '#f8d7da',
+                          color: canDonateTo(donorBloodGroup as BloodGroup, selectedRequest.bloodGroup as BloodGroup) 
+                            ? '#155724' 
+                            : '#721c24',
+                          border: canDonateTo(donorBloodGroup as BloodGroup, selectedRequest.bloodGroup as BloodGroup)
+                            ? '1px solid #c3e6cb'
+                            : '1px solid #f5c6cb'
+                        }}>
+                          {canDonateTo(donorBloodGroup as BloodGroup, selectedRequest.bloodGroup as BloodGroup)
+                            ? `✓ Your ${donorBloodGroup} blood is compatible with ${selectedRequest.bloodGroup}`
+                            : `✗ Your ${donorBloodGroup} blood is NOT compatible with ${selectedRequest.bloodGroup}`
+                          }
+                        </div>
+                      )}
                     </div>
 
                     {/* Message */}

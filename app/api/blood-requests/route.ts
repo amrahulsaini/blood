@@ -17,16 +17,21 @@ export async function POST(request: NextRequest) {
 
     const urgency = body.emergencyState === 'Critical' ? 'critical' : body.emergencyState === 'High' ? 'high' : body.emergencyState === 'Medium' ? 'medium' : 'low';
 
+    // Parse age and validate
+    const age = parseInt(body.age) || 0;
+    console.log('Received age:', body.age, 'Parsed age:', age);
+
     const result = await query<ResultSetHeader>(
       `INSERT INTO blood_requests 
-       (patient_name, requester_name, requester_email, requester_phone, blood_group, units_needed, hospital_name, hospital_address, city, state, pincode, urgency, required_date, reason, status) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (patient_name, requester_name, requester_email, requester_phone, blood_group, age, units_needed, hospital_name, hospital_address, city, state, pincode, urgency, required_date, reason, status) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         body.patientName,
         body.patientName,
         body.email,
         body.contact,
         body.bloodGroup,
+        age,
         1,
         body.hospitalName,
         body.hospitalName,
@@ -112,7 +117,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const requests = await query<RowDataPacket[]>(
-      `SELECT id, patient_name as patientName, requester_email as email, requester_phone as contact, blood_group as bloodGroup, hospital_name as hospitalName, city as locality, urgency as emergencyState, status, created_at as submittedAt 
+      `SELECT id, patient_name as patientName, requester_email as email, requester_phone as contact, blood_group as bloodGroup, age, hospital_name as hospitalName, city as locality, urgency as emergencyState, status, created_at as submittedAt 
        FROM blood_requests 
        ORDER BY created_at DESC`
     );
