@@ -133,7 +133,7 @@ export default function DonorCertificatesPage() {
     ctx.drawImage(img, 0, 0, width, height);
     const baseFontSize = Math.round(width * 0.035 * Math.max(0.6, Math.min(1.6, fontScale)));
     ctx.font = `italic 700 ${baseFontSize}px Georgia, 'Times New Roman', Times, serif`;
-    ctx.fillStyle = '#a855f7';
+    ctx.fillStyle = '#DC143C'; // Crimson red color
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const x = Math.round(width * NAME_X_CENTER_RATIO);
@@ -318,7 +318,7 @@ export default function DonorCertificatesPage() {
               transform: 'translate(-50%, -50%)',
               width: '72%',
               textAlign: 'center',
-              color: '#a855f7',
+              color: '#DC143C', // Crimson red
               fontFamily: "Georgia, 'Times New Roman', Times, serif",
               fontStyle: 'italic',
               fontWeight: 700,

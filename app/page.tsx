@@ -2,13 +2,13 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { UserCircle, Handshake, Droplet, Heart, Users, ClipboardList } from 'lucide-react';
+import { UserCircle, Handshake, Droplet, Heart, Users, ClipboardList, Menu, X } from 'lucide-react';
 import NotificationBell from './components/NotificationBell';
 import styles from './home.module.css';
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 export default function Home() {
-  // Removed cursor effect for normal cursor
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className={styles.pageContainer}>
@@ -30,7 +30,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Header Buttons */}
+          {/* Desktop Header Buttons */}
           <div className={styles.headerButtons}>
             <NotificationBell />
             <Link href="/profile">
@@ -44,7 +44,36 @@ export default function Home() {
               <span>Partner With Us</span>
             </button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className={styles.mobileMenuButton}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className={styles.mobileMenu}>
+            <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
+              <div className={styles.mobileMenuItem}>
+                <UserCircle size={20} />
+                <span>Profile</span>
+              </div>
+            </Link>
+            <button className={styles.mobileMenuItem} onClick={() => setIsMobileMenuOpen(false)}>
+              <Handshake size={20} />
+              <span>Partner With Us</span>
+            </button>
+            <div className={styles.mobileMenuDivider}></div>
+            <div className={styles.mobileMenuNotification}>
+              <NotificationBell />
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Cards Section */}
@@ -179,6 +208,7 @@ export default function Home() {
       {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
+          {/* Brand Section */}
           <div className={styles.footerBrand}>
             <Image 
               src="/assh logo.webp" 
@@ -187,21 +217,52 @@ export default function Home() {
               height={50}
               className={styles.footerLogo}
             />
-            <div>
+            <div className={styles.footerBrandInfo}>
               <div className={styles.footerBrandName}>TheLifeSaviours</div>
               <div className={styles.footerTagline}>Aashayein - Hope for Life</div>
+              <div className={styles.footerDescription}>
+                Join thousands of heroes saving lives through blood donation. Every drop counts.
+              </div>
             </div>
           </div>
-          <div className={styles.footerLinks}>
-            <a href="/about">About Us</a>
-            <a href="/contact">Contact</a>
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/terms">Terms of Service</a>
+
+          {/* Quick Links */}
+          <div className={styles.footerSection}>
+            <h4 className={styles.footerSectionTitle}>Quick Links</h4>
+            <div className={styles.footerLinks}>
+              <Link href="/about">About Us</Link>
+              <Link href="/donorentries">Become a Donor</Link>
+              <Link href="/request-blood">Request Blood</Link>
+              <Link href="/donate-blood">Find Donors</Link>
+            </div>
           </div>
-          <div className={styles.footerSocial}>
-            <p>#BloodDonation #SaveLives #Aashayein</p>
-            <p className={styles.copyright}>© 2025 TheLifeSaviours. All rights reserved.</p>
+
+          {/* Legal */}
+          <div className={styles.footerSection}>
+            <h4 className={styles.footerSectionTitle}>Legal</h4>
+            <div className={styles.footerLinks}>
+              <Link href="/privacy">Privacy Policy</Link>
+              <Link href="/terms">Terms of Service</Link>
+              <Link href="/contact">Contact Us</Link>
+              <Link href="/faq">FAQ</Link>
+            </div>
           </div>
+
+          {/* Social & Contact */}
+          <div className={styles.footerSection}>
+            <h4 className={styles.footerSectionTitle}>Connect With Us</h4>
+            <div className={styles.footerSocial}>
+              <p className={styles.footerHashtags}>#BloodDonation #SaveLives #Aashayein</p>
+              <p className={styles.footerEmail}>info@thelifesaviours.org</p>
+              <p className={styles.footerPhone}>+91 XXXXX XXXXX</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright Bar */}
+        <div className={styles.footerBottom}>
+          <p className={styles.copyright}>© 2025 TheLifeSaviours by Aashayein. All rights reserved.</p>
+          <p className={styles.madeWith}>Made with ❤️ for saving lives</p>
         </div>
       </footer>
     </div>

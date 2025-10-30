@@ -27,7 +27,21 @@ export async function POST(req: NextRequest) {
     }
 
     const donorName = (name || 'a blood donor').toString().slice(0, 120);
-    const prompt = `Write an enthusiastic LinkedIn post (4-6 lines) from the perspective of ${donorName} who is personally excited and grateful about joining Aashayein – The Life Saviours as a blood donor. Write in FIRST PERSON (use "I", "my", "I'm"). Express genuine excitement and gratitude for joining this noble cause. Emphasize how proud and honored the person is to be part of this life-saving community. Make it personal, heartfelt, and inspiring. Include 3-4 relevant emojis and 4-6 impactful hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood). Tone: grateful, excited, inspirational, community-driven. Output plain text only—no markdown, no quotes.`;
+    const prompt = `Write a powerful, inspiring, and impactful LinkedIn post (8-12 lines) from the perspective of ${donorName} who is personally thrilled and deeply grateful about joining @aashayein – The Life Saviours as a blood donor. 
+
+REQUIREMENTS:
+- Write in FIRST PERSON (use "I", "my", "I'm")
+- Express genuine excitement, pride, and gratitude for joining this noble cause
+- Make it personal, heartfelt, emotional, and inspiring
+- Emphasize the impact of saving lives and being part of this community
+- MUST mention @aashayein (with @ symbol) in the post
+- MUST include: "I'm deeply grateful to Jatin Sir and Shruti Mam for inspiring me to be part of this life-saving initiative"
+- Make it longer, more detailed, and impactful (8-12 lines minimum)
+- Include 5-7 relevant emojis throughout the post
+- End with 6-8 powerful hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
+
+Tone: grateful, passionate, inspirational, community-driven, powerful, and promising.
+Output: Plain text only—no markdown, no quotes, no formatting marks.`;
 
     async function callModel(model: string) {
       const url = `${API_BASE}/${model}:generateContent?key=${apiKey}`;
@@ -42,10 +56,10 @@ export async function POST(req: NextRequest) {
           },
         ],
         generationConfig: {
-          temperature: 0.9,
-          topK: 40,
-          topP: 0.9,
-          maxOutputTokens: 400,
+          temperature: 0.95,
+          topK: 50,
+          topP: 0.95,
+          maxOutputTokens: 800,
         },
         }),
       });
