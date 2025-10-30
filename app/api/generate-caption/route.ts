@@ -27,21 +27,39 @@ export async function POST(req: NextRequest) {
     }
 
     const donorName = (name || 'a blood donor').toString().slice(0, 120);
-    const prompt = `Write a powerful, inspiring, and impactful LinkedIn post (8-12 lines) from the perspective of ${donorName} who is personally thrilled and deeply grateful about joining @aashayein – The Life Saviours as a blood donor. 
+    const prompt = `Write a powerful, inspiring, and impactful LinkedIn post (10-14 lines) from the perspective of ${donorName} who is personally thrilled and deeply grateful about joining @aashayein – The Life Saviours as a blood donor. 
 
-REQUIREMENTS:
+CRITICAL REQUIREMENTS:
 - Write in FIRST PERSON (use "I", "my", "I'm")
 - Express genuine excitement, pride, and gratitude for joining this noble cause
 - Make it personal, heartfelt, emotional, and inspiring
 - Emphasize the impact of saving lives and being part of this community
 - MUST mention @aashayein (with @ symbol) in the post
-- MUST include: "I'm deeply grateful to Jatin Sir and Shruti Mam for inspiring me to be part of this life-saving initiative"
-- Make it longer, more detailed, and impactful (8-12 lines minimum)
+- MUST include proper LinkedIn formatting with line breaks
+
+MANDATORY THANKS SECTION (EXACT ORDER):
+At the end of the post, include these thanks in this EXACT ORDER with line breaks:
+
+I'm deeply grateful to:
+- Our Honorable Director Sir, for his visionary leadership
+- Arpit Sir, for his constant guidance and support
+- Shruti Mam, for inspiring me to be part of this life-saving initiative
+- Jatin Sir, for motivating me to make a difference
+
+STRUCTURE:
+1. Opening: Personal excitement and commitment (2-3 lines)
+2. Middle: Impact and community (3-4 lines)  
+3. Gratitude section: Thanks to leaders (4-5 lines as shown above)
+4. Closing: Call to action or inspiring message (1-2 lines)
+
+FORMATTING:
 - Include 5-7 relevant emojis throughout the post
-- End with 6-8 powerful hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
+- Add line breaks between sections for better readability
+- End with 6-8 powerful hashtags on a new line (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
 
 Tone: grateful, passionate, inspirational, community-driven, powerful, and promising.
-Output: Plain text only—no markdown, no quotes, no formatting marks.`;
+Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra formatting marks. Use actual line breaks (\n) between sections.`;
+
 
     async function callModel(model: string) {
       const url = `${API_BASE}/${model}:generateContent?key=${apiKey}`;
