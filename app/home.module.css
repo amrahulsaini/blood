@@ -978,7 +978,9 @@
 
 .footerLogo {
   border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(220, 20, 60, 0.2);
+  background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
+  padding: 6px;
+  box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
 }
 
 .footerBrandName {
