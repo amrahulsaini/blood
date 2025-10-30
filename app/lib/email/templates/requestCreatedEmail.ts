@@ -115,11 +115,26 @@ export function requestCreatedEmail(data: RequestCreatedEmailData): string {
     </p>
 
     <div style="text-align: center; margin: 35px 0;">
+      <a href="https://thelifesaviours.org/profile" 
+         style="display: inline-block; 
+                background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%);
+                color: white; 
+                padding: 14px 32px; 
+                text-decoration: none; 
+                border-radius: 8px; 
+                font-weight: 600; 
+                font-size: 16px;
+                box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);">
+        View My Request Dashboard
+      </a>
+    </div>
+
+    <div style="text-align: center; margin: 35px 0;">
       <p style="color: #666; font-size: 14px; margin: 10px 0;">
         Need help? Contact our support team
       </p>
       <p style="color: #DC143C; font-size: 16px; font-weight: 600; margin: 5px 0;">
-        📧 support@bloodconnect.com | 📞 +1-800-BLOOD-HELP
+        📧 info@thelifesaviours.org | 📞 Emergency Helpline
       </p>
     </div>
 

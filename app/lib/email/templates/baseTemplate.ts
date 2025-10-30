@@ -122,16 +122,17 @@ export const baseEmailTemplate = (content: string) => `
       <p><strong>TheLifeSaviours - Aashayein</strong></p>
       <p>Every drop counts. Every life matters.</p>
       <div class="social-links">
-        <a href="#">Facebook</a> | 
-        <a href="#">Twitter</a> | 
-        <a href="#">Instagram</a>
+        <a href="https://thelifesaviours.org">Visit Our Website</a> | 
+        <a href="https://thelifesaviours.org/donate-blood">Become a Donor</a> | 
+        <a href="https://thelifesaviours.org/request-blood">Request Blood</a>
       </div>
       <p style="color: #999; font-size: 12px; margin-top: 20px;">
         This is an automated email. Please do not reply.<br>
-        If you have questions, contact us at support@thelifesaviours.com
+        If you have questions, contact us at <a href="mailto:info@thelifesaviours.org" style="color: #DC143C;">info@thelifesaviours.org</a>
       </p>
       <p style="color: #999; font-size: 11px;">
-        © ${new Date().getFullYear()} TheLifeSaviours. All rights reserved.
+        © ${new Date().getFullYear()} TheLifeSaviours by Aashayein. All rights reserved.<br>
+        <a href="https://thelifesaviours.org" style="color: #DC143C; text-decoration: none;">thelifesaviours.org</a>
       </p>
     </div>
   </div>

@@ -92,7 +92,7 @@ export const donorRegistrationEmail = (data: DonorData) => {
     </div>
 
     <center>
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/donor-dashboard?id=${data.donorId}" 
+      <a href="https://thelifesaviours.org/profile" 
          class="button">
         View My Donor Dashboard
       </a>
@@ -107,7 +107,7 @@ export const donorRegistrationEmail = (data: DonorData) => {
     </p>
 
     <p style="margin-top: 20px; color: #666; font-size: 14px;">
-      Questions? Contact us at <strong>support@thelifesaviours.com</strong> or call <strong>+91-XXXX-XXXXXX</strong>
+      Questions? Contact us at <strong>info@thelifesaviours.org</strong> or visit <a href="https://thelifesaviours.org" style="color: #DC143C;">thelifesaviours.org</a>
     </p>
   `;
 

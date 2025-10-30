@@ -127,15 +127,15 @@ export const donorMatchedEmail = (data: DonorMatchData) => {
     </div>
 
     <center>
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/confirm-donation?requestId=${data.requestId}" 
+      <a href="https://thelifesaviours.org/donorentries" 
          class="button" 
          style="background: linear-gradient(135deg, #DC143C 0%, #8B0000 100%); margin: 10px 5px;">
         ✅ I Can Donate
       </a>
-      <a href="${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/decline-donation?requestId=${data.requestId}" 
+      <a href="tel:${data.emergencyContact}" 
          class="button" 
-         style="background: #999; margin: 10px 5px;">
-        ❌ Not Available
+         style="background: #4CAF50; margin: 10px 5px;">
+        📞 Call Now
       </a>
     </center>
 
@@ -144,12 +144,12 @@ export const donorMatchedEmail = (data: DonorMatchData) => {
         🌟 Your Response Can Save a Life Today!
       </p>
       <p style="margin: 10px 0 0 0;">
-        Even if you cannot donate right now, please respond so we can find another donor quickly.
+        Please call the emergency contact or visit TheLifeSaviours platform to confirm your availability.
       </p>
     </div>
 
     <p style="margin-top: 30px; color: #5C4033;">
-      <strong>Important:</strong> If you're unable to donate, please click "Not Available" so we can reach out to other donors immediately.
+      <strong>Important:</strong> If you're unable to donate, please inform us so we can reach out to other donors immediately.
     </p>
 
     <p style="margin-top: 20px; text-align: center; font-size: 18px; font-weight: 600; color: #DC143C;">
