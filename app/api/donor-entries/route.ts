@@ -72,10 +72,10 @@ export async function POST(request: NextRequest) {
         [
           `New Donor Registration - ${newDonor.bloodGroup}`,
           `${newDonor.fullName} registered as a ${newDonor.donorType} donor with ${newDonor.bloodGroup} blood group. Contact: ${newDonor.mobile}`,
-          'success',
+          'system',
           String(newDonor.id),
-          'donor_registration',
-          'normal'
+          'donor_entry',
+          'low'
         ]
       );
       console.log(`Notification created for donor registration #${newDonor.id}`);
