@@ -37,13 +37,13 @@ CRITICAL REQUIREMENTS:
 - MUST mention @aashayein (with @ symbol) in the post
 - MUST include proper LinkedIn formatting with line breaks
 
-MANDATORY THANKS SECTION (EXACT ORDER):
+MANDATORY THANKS SECTION (EXACT ORDER with correct pronouns):
 At the end of the post, include these thanks in this EXACT ORDER with line breaks:
 
 I'm deeply grateful to:
 - Our Honorable Director Sir Arpit Agrawal, for his visionary leadership and constant guidance
-- Shruti Mam, for inspiring me to be part of this life-saving initiative
-- Jatin Sir, for motivating me to make a difference
+- Shruti Mam, for her inspiring dedication and for motivating me to be part of this life-saving initiative
+- Jatin Sir, for his continuous support and for encouraging me to make a difference
 
 STRUCTURE:
 1. Opening: Personal excitement and commitment (2-3 lines)
