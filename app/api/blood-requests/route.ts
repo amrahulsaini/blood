@@ -121,6 +121,12 @@ export async function GET(request: NextRequest) {
        FROM blood_requests 
        ORDER BY created_at DESC`
     );
+    
+    // Debug: Log the first request to see what data we're getting
+    if (requests.length > 0) {
+      console.log('Sample request data:', requests[0]);
+    }
+    
     return NextResponse.json(requests, { status: 200 });
   } catch (error) {
     console.error('Error fetching blood requests:', error);

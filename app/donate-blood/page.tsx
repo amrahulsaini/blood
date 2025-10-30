@@ -379,7 +379,9 @@ export default function DonateBloodPage() {
                   {/* Patient Info */}
                   <div className={styles.patientInfo}>
                     <h3 className={styles.patientName}>{request.patientName}</h3>
-                    <p className={styles.patientAge}>Age: {request.age} years</p>
+                    <p className={styles.patientAge}>
+                      Age: {request.age && Number(request.age) > 0 ? `${request.age} years` : 'Not specified'}
+                    </p>
                     <div className={styles.statusBadge}>
                       <span className={styles.statusDot}></span>
                       <span className={styles.statusText}>Status: {request.status}</span>

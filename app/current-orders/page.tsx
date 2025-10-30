@@ -290,7 +290,7 @@ export default function CurrentOrdersPage() {
                     </div>
                     <div className={styles.infoItem}>
                       <User size={16} />
-                      <span>Age: {request.age}</span>
+                      <span>Age: {request.age && Number(request.age) > 0 ? `${request.age} years` : 'Not specified'}</span>
                     </div>
                     <div className={styles.infoItem}>
                       <MapPin size={16} />
