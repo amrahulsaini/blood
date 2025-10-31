@@ -81,10 +81,10 @@ FORMATTING:
 - Use proper paragraph breaks with blank lines between sections
 - DO NOT write everything in one continuous paragraph
 - Add line breaks (empty lines) to make it readable and structured
-- End with 6-8 powerful hashtags on a new line
-- ⚠️ MANDATORY: #NayiAashayeinNayiUdaan MUST BE THE FIRST HASHTAG - DO NOT SKIP THIS
-- After #NayiAashayeinNayiUdaan, add other relevant hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
-- IMPORTANT: Every caption MUST start hashtags with #NayiAashayeinNayiUdaan
+- End with ONLY ONE HASHTAG: #NayiAashayeinNayiUdaan
+- ⚠️ CRITICAL: USE ONLY #NayiAashayeinNayiUdaan - NO OTHER HASHTAGS
+- DO NOT add #BloodDonation, #SaveLives, #Aashayein or any other hashtags
+- MANDATORY: The caption must end with ONLY #NayiAashayeinNayiUdaan
 
 VISUAL FORMAT EXAMPLE:
 [Opening paragraph with 2-3 sentences]
@@ -98,11 +98,11 @@ I'm deeply grateful to:
 
 [Closing call to action]
 
-#NayiAashayeinNayiUdaan #BloodDonation #SaveLives ...
+#NayiAashayeinNayiUdaan
 
 Tone: grateful, passionate, inspirational, community-driven, powerful, and promising.
 Output: Plain text with MULTIPLE LINE BREAKS between sections—no markdown asterisks, no quotes, no extra formatting marks.
-CRITICAL: The hashtag section MUST begin with #NayiAashayeinNayiUdaan - this is NON-NEGOTIABLE.
+CRITICAL: End with ONLY ONE HASHTAG: #NayiAashayeinNayiUdaan - NO OTHER HASHTAGS ALLOWED.
 IMPORTANT: Make this caption COMPLETELY DIFFERENT from previous ones - use fresh language, new metaphors, different sentence structures.`;
 
 
