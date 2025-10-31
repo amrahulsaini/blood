@@ -65,20 +65,43 @@ I'm deeply grateful to:
 
 STRUCTURE:
 1. Opening: Personal excitement and commitment (2-3 lines) - VARY THIS SECTION
-2. Middle: Impact and community (3-4 lines) - USE DIFFERENT PERSPECTIVES  
+   ADD A BLANK LINE AFTER OPENING
+
+2. Middle: Impact and community (3-4 lines) - USE DIFFERENT PERSPECTIVES
+   ADD A BLANK LINE AFTER MIDDLE SECTION
+
 3. Gratitude section: Thanks to leaders (3-4 lines as shown above)
+   ADD A BLANK LINE AFTER GRATITUDE SECTION
+
 4. Closing: Call to action or inspiring message (1-2 lines) - CHANGE THE MESSAGE
+   ADD A BLANK LINE BEFORE HASHTAGS
 
 FORMATTING:
 - Include 5-7 relevant emojis throughout the post
-- Add line breaks between sections for better readability
+- Use proper paragraph breaks with blank lines between sections
+- DO NOT write everything in one continuous paragraph
+- Add line breaks (empty lines) to make it readable and structured
 - End with 6-8 powerful hashtags on a new line
 - ⚠️ MANDATORY: #NayiAashayeinNayiUdaan MUST BE THE FIRST HASHTAG - DO NOT SKIP THIS
 - After #NayiAashayeinNayiUdaan, add other relevant hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
 - IMPORTANT: Every caption MUST start hashtags with #NayiAashayeinNayiUdaan
 
+VISUAL FORMAT EXAMPLE:
+[Opening paragraph with 2-3 sentences]
+
+[Middle paragraph with 3-4 sentences about impact]
+
+I'm deeply grateful to:
+- Director line
+- Shruti Mam line
+- Jatin Sir line
+
+[Closing call to action]
+
+#NayiAashayeinNayiUdaan #BloodDonation #SaveLives ...
+
 Tone: grateful, passionate, inspirational, community-driven, powerful, and promising.
-Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra formatting marks. Use actual line breaks (\n) between sections.
+Output: Plain text with MULTIPLE LINE BREAKS between sections—no markdown asterisks, no quotes, no extra formatting marks.
 CRITICAL: The hashtag section MUST begin with #NayiAashayeinNayiUdaan - this is NON-NEGOTIABLE.
 IMPORTANT: Make this caption COMPLETELY DIFFERENT from previous ones - use fresh language, new metaphors, different sentence structures.`;
 
