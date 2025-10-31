@@ -160,11 +160,21 @@ IMPORTANT: Make this caption COMPLETELY DIFFERENT from previous ones - use fresh
     }
 
     const data = await resp.json();
-    const text: string = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    let text: string = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!text || text.trim() === '') {
       return NextResponse.json({ error: 'AI model is at high quota. Please try again in a few moments.' }, { status: 503 });
     }
+
+    // Force proper formatting by ensuring line breaks
+    // Add blank line before "I'm deeply grateful to:"
+    text = text.replace(/\n?I'm deeply grateful to:/g, '\n\nI\'m deeply grateful to:');
+    
+    // Add blank line before hashtags
+    text = text.replace(/\n?(#NayiAashayeinNayiUdaan)/g, '\n\n$1');
+    
+    // Ensure there's a blank line after the last gratitude bullet before closing
+    text = text.replace(/(-\s*Jatin Sir[^\n]+)\n([^#\n-])/g, '$1\n\n$2');
 
     return NextResponse.json({ caption: text.trim() }, { status: 200 });
   } catch (e) {
