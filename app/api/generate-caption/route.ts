@@ -39,9 +39,11 @@ export async function POST(req: NextRequest) {
     ];
     const selectedVariation = variations[randomSeed % variations.length];
     
-    const prompt = `Write a powerful, inspiring, and impactful LinkedIn post (10-14 lines) from the perspective of ${donorName} who is ${selectedVariation} about joining @aashayein – The Life Saviours as a blood donor. 
+    const prompt = `Write ONE powerful, inspiring, and impactful LinkedIn post (10-14 lines) from the perspective of ${donorName} who is ${selectedVariation} about joining @aashayein – The Life Saviours as a blood donor. 
 
 CRITICAL REQUIREMENTS:
+- Write ONLY ONE COMPLETE CAPTION - NO OPTIONS, NO VARIATIONS
+- DO NOT write "Option 1", "Option 2" or multiple versions
 - Write in FIRST PERSON (use "I", "my", "I'm")
 - Express genuine excitement, pride, and gratitude for joining this noble cause
 - Make it personal, heartfelt, emotional, and inspiring
@@ -50,6 +52,8 @@ CRITICAL REQUIREMENTS:
 - MUST include proper LinkedIn formatting with line breaks
 - Make each caption UNIQUE and DIFFERENT - vary the opening, middle, and closing
 - Use different phrases and expressions each time - DO NOT repeat common patterns
+
+OUTPUT FORMAT: Write ONLY ONE single, complete LinkedIn post. Do NOT provide multiple options or alternatives.
 
 MANDATORY THANKS SECTION (EXACT ORDER with correct pronouns):
 At the end of the post, include these thanks in this EXACT ORDER with line breaks:
