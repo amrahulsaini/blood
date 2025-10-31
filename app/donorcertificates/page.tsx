@@ -2,6 +2,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Cinzel_Decorative } from 'next/font/google';
+
+// Load Cinzel Decorative font at module scope as required by next/font
+const cinzelDecorative = Cinzel_Decorative({ subsets: ['latin'], weight: ['400','700','900'] });
 
 const CERT_IMAGE_SRC = '/official%20offer%20letter.png';
 
@@ -131,6 +135,14 @@ export default function DonorCertificatesPage() {
     if (!img.complete) {
       await new Promise<void>((resolve) => { img.onload = () => resolve(); });
     }
+    // Ensure Cinzel Decorative font is loaded before drawing text on canvas
+    try {
+      if (document && 'fonts' in document && (document as any).fonts?.load) {
+        // Load a representative size/weight to warm the font
+        await (document as any).fonts.load('700 32px "Cinzel Decorative"');
+        await (document as any).fonts.ready;
+      }
+    } catch {}
     const width = img.naturalWidth;
     const height = img.naturalHeight;
     const canvas = document.createElement('canvas');
@@ -140,8 +152,8 @@ export default function DonorCertificatesPage() {
     if (!ctx) return null;
     ctx.drawImage(img, 0, 0, width, height);
     const baseFontSize = Math.round(width * 0.035 * Math.max(0.6, Math.min(1.6, fontScale)));
-    ctx.font = `italic 700 ${baseFontSize}px Georgia, 'Times New Roman', Times, serif`;
-    ctx.fillStyle = '#DC143C'; // Crimson red color
+    ctx.font = `700 ${baseFontSize}px "Cinzel Decorative", Georgia, 'Times New Roman', Times, serif`;
+    ctx.fillStyle = '#000000'; // Black color per requirement
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     const x = Math.round(width * NAME_X_CENTER_RATIO);
@@ -151,7 +163,7 @@ export default function DonorCertificatesPage() {
     const renderName = (name || 'Donor');
     while (ctx.measureText(renderName).width > maxWidth && displayFont > 18) {
       displayFont -= 1;
-      ctx.font = `italic 700 ${displayFont}px Georgia, 'Times New Roman', Times, serif`;
+      ctx.font = `700 ${displayFont}px "Cinzel Decorative", Georgia, 'Times New Roman', Times, serif`;
     }
     ctx.fillText(renderName, x, y);
     return await new Promise((resolve) => canvas.toBlob((b) => resolve(b), 'image/png'));
@@ -326,9 +338,9 @@ export default function DonorCertificatesPage() {
               transform: 'translate(-50%, -50%)',
               width: '72%',
               textAlign: 'center',
-              color: '#DC143C', // Crimson red
-              fontFamily: "Georgia, 'Times New Roman', Times, serif",
-              fontStyle: 'italic',
+              color: '#000000', // Black per requirement
+              fontFamily: '"Cinzel Decorative", Georgia, "Times New Roman", Times, serif',
+              fontStyle: 'normal',
               fontWeight: 700,
               letterSpacing: '0.02em',
               fontSize: `clamp(16px, ${3.5 * Math.max(0.6, Math.min(1.6, fontScale))}vw, ${40 * Math.max(0.6, Math.min(1.6, fontScale))}px)`,
@@ -336,6 +348,7 @@ export default function DonorCertificatesPage() {
               overflow: 'hidden',
               textOverflow: 'ellipsis'
             }}
+            className={cinzelDecorative.className}
             title={name}
           >
             {name || 'Donor'}
