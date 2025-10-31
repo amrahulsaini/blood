@@ -27,7 +27,19 @@ export async function POST(req: NextRequest) {
     }
 
     const donorName = (name || 'a blood donor').toString().slice(0, 120);
-    const prompt = `Write a powerful, inspiring, and impactful LinkedIn post (10-14 lines) from the perspective of ${donorName} who is personally thrilled and deeply grateful about joining @aashayein – The Life Saviours as a blood donor. 
+    
+    // Add randomization to make each caption unique
+    const randomSeed = Math.floor(Math.random() * 1000);
+    const variations = [
+      'passionate and deeply moved',
+      'incredibly honored and excited',
+      'thrilled beyond words',
+      'genuinely grateful and inspired',
+      'proud and committed'
+    ];
+    const selectedVariation = variations[randomSeed % variations.length];
+    
+    const prompt = `Write a powerful, inspiring, and impactful LinkedIn post (10-14 lines) from the perspective of ${donorName} who is ${selectedVariation} about joining @aashayein – The Life Saviours as a blood donor. 
 
 CRITICAL REQUIREMENTS:
 - Write in FIRST PERSON (use "I", "my", "I'm")
@@ -36,6 +48,8 @@ CRITICAL REQUIREMENTS:
 - Emphasize the impact of saving lives and being part of this community
 - MUST mention @aashayein (with @ symbol) in the post
 - MUST include proper LinkedIn formatting with line breaks
+- Make each caption UNIQUE and DIFFERENT - vary the opening, middle, and closing
+- Use different phrases and expressions each time - DO NOT repeat common patterns
 
 MANDATORY THANKS SECTION (EXACT ORDER with correct pronouns):
 At the end of the post, include these thanks in this EXACT ORDER with line breaks:
@@ -46,10 +60,10 @@ I'm deeply grateful to:
 - Jatin Sir, for his continuous support and for encouraging me to make a difference
 
 STRUCTURE:
-1. Opening: Personal excitement and commitment (2-3 lines)
-2. Middle: Impact and community (3-4 lines)  
+1. Opening: Personal excitement and commitment (2-3 lines) - VARY THIS SECTION
+2. Middle: Impact and community (3-4 lines) - USE DIFFERENT PERSPECTIVES  
 3. Gratitude section: Thanks to leaders (3-4 lines as shown above)
-4. Closing: Call to action or inspiring message (1-2 lines)
+4. Closing: Call to action or inspiring message (1-2 lines) - CHANGE THE MESSAGE
 
 FORMATTING:
 - Include 5-7 relevant emojis throughout the post
@@ -59,7 +73,8 @@ FORMATTING:
 - Then add other relevant hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
 
 Tone: grateful, passionate, inspirational, community-driven, powerful, and promising.
-Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra formatting marks. Use actual line breaks (\n) between sections.`;
+Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra formatting marks. Use actual line breaks (\n) between sections.
+IMPORTANT: Make this caption COMPLETELY DIFFERENT from previous ones - use fresh language, new metaphors, different sentence structures.`;
 
 
     async function callModel(model: string) {
@@ -75,9 +90,9 @@ Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra
           },
         ],
         generationConfig: {
-          temperature: 0.95,
-          topK: 50,
-          topP: 0.95,
+          temperature: 1.0, // Increased for more randomness
+          topK: 60,
+          topP: 0.98,
           maxOutputTokens: 800,
         },
         }),
@@ -107,10 +122,10 @@ Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra
       }
       if (!succeeded) {
         console.error('Caption API failed', errors);
-        // Return error - no fallback, force AI generation
+        // Return user-friendly error for quota issues
         return NextResponse.json(
-          { error: 'AI caption generation failed. Please try again.', details: errors },
-          { status: 500 }
+          { error: 'AI model is at high quota. Please try again in a few moments.' },
+          { status: 503 }
         );
       }
     }
@@ -119,13 +134,13 @@ Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra
     const text: string = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     
     if (!text || text.trim() === '') {
-      return NextResponse.json({ error: 'AI generated empty caption. Please try again.' }, { status: 500 });
+      return NextResponse.json({ error: 'AI model is at high quota. Please try again in a few moments.' }, { status: 503 });
     }
 
     return NextResponse.json({ caption: text.trim() }, { status: 200 });
   } catch (e) {
     console.error('Generate caption error', e);
-    return NextResponse.json({ error: 'Unexpected server error' }, { status: 500 });
+    return NextResponse.json({ error: 'AI model is at high quota. Please try again in a few moments.' }, { status: 503 });
   }
 }
 
