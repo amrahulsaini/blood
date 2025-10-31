@@ -7,3 +7,4 @@ export { urgentReminderEmail } from './urgentReminder';
 export { welcomeEmail } from './welcomeEmail';
 export { requestCreatedEmail } from './requestCreatedEmail';
 export { donorContactedYouEmail } from './donorContactedYou';
+export { donorCertificateEmail } from './donorCertificateEmail';

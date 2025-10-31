@@ -5,6 +5,13 @@ interface EmailOptions {
   subject: string;
   html: string;
   text?: string;
+  attachments?: Array<{
+    filename?: string;
+    content?: Buffer | string;
+    path?: string;
+    contentType?: string;
+    cid?: string;
+  }>;
 }
 
 // Create reusable transporter
@@ -31,6 +38,7 @@ export async function sendEmail(options: EmailOptions) {
       subject: options.subject,
       html: options.html,
       text: options.text || stripHtml(options.html),
+      attachments: options.attachments,
     };
 
     const info = await transporter.sendMail(mailOptions);
