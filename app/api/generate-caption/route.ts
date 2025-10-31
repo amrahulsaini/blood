@@ -54,7 +54,9 @@ STRUCTURE:
 FORMATTING:
 - Include 5-7 relevant emojis throughout the post
 - Add line breaks between sections for better readability
-- End with 6-8 powerful hashtags on a new line (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
+- End with 6-8 powerful hashtags on a new line
+- MUST include #NayiAashayeinNayiUdaan as the FIRST hashtag
+- Then add other relevant hashtags (e.g., #BloodDonation #SaveLives #Aashayein #LifeSaver #BeTheChange #DonateBlood #HeroesInAction #CommunityService)
 
 Tone: grateful, passionate, inspirational, community-driven, powerful, and promising.
 Output: Plain text with line breaks—no markdown asterisks, no quotes, no extra formatting marks. Use actual line breaks (\n) between sections.`;
