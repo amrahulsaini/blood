@@ -243,7 +243,7 @@ export default function Home() {
           <div className={styles.footerSection}>
             <h4 className={styles.footerSectionTitle}>Quick Links</h4>
             <div className={styles.footerLinks}>
-              <Link href="/donorentries">Become a Donor</Link>
+              <Link href="/donate-blood">Become a Donor</Link>
               <Link href="/request-blood">Request Blood</Link>
               <Link href="/donate-blood">Find Donors</Link>
             </div>
