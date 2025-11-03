@@ -126,6 +126,18 @@ export default function Home() {
             </p>
             <div className={styles.cardArrow}>→</div>
           </Link>
+
+          {/* Card 5: Become a Donor */}
+          <Link href="/donorentries" className={styles.card}>
+            <div className={styles.cardIcon}>
+              <span role="img" aria-label="donor" style={{fontSize:32}}>🩸</span>
+            </div>
+            <h3 className={styles.cardTitle}>Become a Donor</h3>
+            <p className={styles.cardDescription}>
+              Fill out a quick form to join our donor registry and get your digital certificate instantly.
+            </p>
+            <div className={styles.cardArrow}>→</div>
+          </Link>
         </div>
       </section>
 
@@ -243,7 +255,6 @@ export default function Home() {
           <div className={styles.footerSection}>
             <h4 className={styles.footerSectionTitle}>Quick Links</h4>
             <div className={styles.footerLinks}>
-              <Link href="/donate-blood">Become a Donor</Link>
               <Link href="/request-blood">Request Blood</Link>
               <Link href="/donate-blood">Find Donors</Link>
             </div>
